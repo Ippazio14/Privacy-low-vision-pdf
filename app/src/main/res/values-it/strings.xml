@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Privacy Low Vision PDF</string>
+    <string name="open_pdf">Apri PDF</string>
+    <string name="search">Cerca</string>
+    <string name="empty_message">Apri un PDF per iniziare a leggere.</string>
+    <string name="open_pdf_first">Prima apri un PDF.</string>
+    <string name="pdf_open_error">Impossibile aprire il PDF (%1$s).</string>
+</resources>
