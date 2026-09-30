@@ -5,6 +5,7 @@ plugins {
 android {
     namespace 'org.ippazio.privacylowvisionpdf'
     compileSdk 36
+    compileSdkExtension 19
 
     defaultConfig {
         applicationId 'org.ippazio.privacylowvisionpdf'
