@@ -1,1 +1,140 @@
+name: Build APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Bootstrap Android project on first run
+        id: bootstrap
+        shell: bash
+        run: |
+          if [ -f settings.gradle ]; then
+            echo "generated=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          cat > /tmp/project.b64 <<'PROJECT_B64'
+          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
+          PROJECT_B64
+          base64 --decode /tmp/project.b64 > /tmp/project.tar.gz
+          tar -xzf /tmp/project.tar.gz
+          echo "generated=true" >> "$GITHUB_OUTPUT"
+
+      - name: Save generated source to repository
+        if: steps.bootstrap.outputs.generated == 'true'
+        continue-on-error: true
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add settings.gradle build.gradle gradle.properties app README.md
+          git commit -m "Initialize Android PDF viewer"
+          git push
+
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Gradle 9.6
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.6.0'
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android platform
+        run: sdkmanager "platforms;android-37" "build-tools;36.0.0"
+
+      - name: Build debug APK
+        run: gradle :app:assembleDebug --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: privacy-low-vision-pdf-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
 
