@@ -19,7 +19,7 @@
     <string name="theme_high_contrast">Alto contrasto</string>
 
     <string name="enable_reflow">Abilita Text Reflow</string>
-    <string name="close_document">Chiudi documento</string>
+    <string name="close_program">Chiudi programma</string>
 
     <string name="home_title">Privacy Low Vision PDF</string>
     <string name="home_intro">Un lettore PDF semplice, pensato soprattutto per persone ipovedenti, ma utilizzabile da tutti.</string>
