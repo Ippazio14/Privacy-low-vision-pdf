@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
     private View menuPanel;
     private View menuScrim;
     private View documentMenuControls;
+    private View documentMenuActions;
     private TextView zoomValue;
     private RadioGroup themeGroup;
 
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
         menuPanel = findViewById(R.id.menu_panel);
         menuScrim = findViewById(R.id.menu_scrim);
         documentMenuControls = findViewById(R.id.document_menu_controls);
+        documentMenuActions = findViewById(R.id.document_menu_actions);
         zoomValue = findViewById(R.id.zoom_value);
         themeGroup = findViewById(R.id.theme_group);
 
@@ -210,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
         boolean open = hasOpenDocument();
         emptyState.setVisibility(open ? View.GONE : View.VISIBLE);
         documentMenuControls.setVisibility(open ? View.VISIBLE : View.GONE);
+        documentMenuActions.setVisibility(open ? View.VISIBLE : View.GONE);
     }
 
     private void ensurePdfViewer() {
@@ -268,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
             }
 
             renderer = new PdfRenderer(descriptor);
-            descriptor = null; // PdfRenderer owns it after successful construction.
+            descriptor = null;
             renderer.close();
             renderer = null;
             return DocumentCheck.OK;
