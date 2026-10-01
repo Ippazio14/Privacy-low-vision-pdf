@@ -2,6 +2,7 @@ package org.ippazio.privacylowvisionpdf;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
     private View menuScrim;
     private View documentMenuControls;
     private View documentMenuActions;
+    private View searchButton;
     private TextView zoomValue;
     private RadioGroup themeGroup;
 
@@ -58,12 +60,12 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
         menuScrim = findViewById(R.id.menu_scrim);
         documentMenuControls = findViewById(R.id.document_menu_controls);
         documentMenuActions = findViewById(R.id.document_menu_actions);
+        searchButton = findViewById(R.id.search_button);
         zoomValue = findViewById(R.id.zoom_value);
         themeGroup = findViewById(R.id.theme_group);
 
         Button menuButton = findViewById(R.id.menu_button);
         Button openButton = findViewById(R.id.open_document_button);
-        Button searchButton = findViewById(R.id.search_button);
         Button zoomOutButton = findViewById(R.id.zoom_out_button);
         Button zoomInButton = findViewById(R.id.zoom_in_button);
         Button reflowButton = findViewById(R.id.reflow_button);
@@ -139,10 +141,13 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
             setTheme(R.style.Theme_PrivacyLowVisionPdf_HighContrast);
         } else if (THEME_DARK.equals(theme)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            setTheme(R.style.Theme_PrivacyLowVisionPdf);
         } else if (THEME_LIGHT.equals(theme)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            setTheme(R.style.Theme_PrivacyLowVisionPdf);
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+            setTheme(R.style.Theme_PrivacyLowVisionPdf);
         }
     }
 
@@ -211,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
     private void updateUiForDocumentState() {
         boolean open = hasOpenDocument();
         emptyState.setVisibility(open ? View.GONE : View.VISIBLE);
+        searchButton.setVisibility(open ? View.VISIBLE : View.GONE);
         documentMenuControls.setVisibility(open ? View.VISIBLE : View.GONE);
         documentMenuActions.setVisibility(open ? View.VISIBLE : View.GONE);
     }
@@ -317,13 +323,22 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
 
         String theme = getSharedPreferences(UI_PREFS, MODE_PRIVATE)
                 .getString(PREF_THEME, THEME_SYSTEM);
+
         if (THEME_DARK.equals(theme)) {
             pdfViewerFragment.setPdfTheme(ReaderPdfFragment.PDF_THEME_DARK);
         } else if (THEME_HIGH_CONTRAST.equals(theme)) {
             pdfViewerFragment.setPdfTheme(ReaderPdfFragment.PDF_THEME_HIGH_CONTRAST);
+        } else if (THEME_SYSTEM.equals(theme) && isNightModeActive()) {
+            pdfViewerFragment.setPdfTheme(ReaderPdfFragment.PDF_THEME_DARK);
         } else {
             pdfViewerFragment.setPdfTheme(ReaderPdfFragment.PDF_THEME_ORIGINAL);
         }
+    }
+
+    private boolean isNightModeActive() {
+        int nightMode = getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK;
+        return nightMode == Configuration.UI_MODE_NIGHT_YES;
     }
 
     @Override

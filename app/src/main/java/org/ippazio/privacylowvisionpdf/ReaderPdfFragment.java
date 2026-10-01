@@ -180,7 +180,8 @@ public class ReaderPdfFragment extends PdfViewerFragment {
         }
 
         if (pdfTheme == PDF_THEME_ORIGINAL) {
-            pdfView.setLayerType(View.LAYER_TYPE_NONE, null);
+            // Leave the AndroidX PdfView in its native rendering mode. Forcing a layer type here
+            // interfered with text-selection gestures in the light theme on real devices.
             pdfView.invalidate();
             return;
         }
