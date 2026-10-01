@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
         Button zoomOutButton = findViewById(R.id.zoom_out_button);
         Button zoomInButton = findViewById(R.id.zoom_in_button);
         Button reflowButton = findViewById(R.id.reflow_button);
-        Button closeButton = findViewById(R.id.close_document_button);
+        Button closeProgramButton = findViewById(R.id.close_program_button);
 
         pdfViewerFragment = (ReaderPdfFragment) getSupportFragmentManager()
                 .findFragmentByTag(PDF_FRAGMENT_TAG);
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
         reflowButton.setOnClickListener(v ->
                 Toast.makeText(this, R.string.reflow_not_ready, Toast.LENGTH_SHORT).show());
 
-        closeButton.setOnClickListener(v -> closeDocument());
+        closeProgramButton.setOnClickListener(v -> closeProgram());
 
         selectSavedThemeRadio();
         themeGroup.setOnCheckedChangeListener((group, checkedId) -> {
@@ -305,17 +305,9 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
                 .show();
     }
 
-    private void closeDocument() {
+    private void closeProgram() {
         closeMenu();
-        if (pdfViewerFragment != null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .remove(pdfViewerFragment)
-                    .commitNow();
-            pdfViewerFragment = null;
-        }
-        zoomValue.setText(R.string.zoom_default);
-        updateUiForDocumentState();
+        finishAndRemoveTask();
     }
 
     private void applyPdfThemeToViewer() {
