@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Privacy Low Vision PDF</string>
+
+    <string name="menu">Menü</string>
+    <string name="menu_button_description">Menü öffnen</string>
+    <string name="open_document">Dokument öffnen</string>
+    <string name="search_text">Text durchsuchen</string>
+    <string name="zoom">Zoom</string>
+    <string name="zoom_out">Verkleinern</string>
+    <string name="zoom_in">Vergrößern</string>
+    <string name="zoom_default">100%</string>
+    <string name="zoom_percent">%1$d%%</string>
+
+    <string name="theme">Design</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
+    <string name="theme_high_contrast">Hoher Kontrast</string>
+
+    <string name="enable_reflow">Text Reflow aktivieren</string>
+    <string name="close_program">Programm schließen</string>
+
+    <string name="language">Sprache</string>
+    <string name="language_system">Systemsprache</string>
+
+    <string name="home_title">Privacy Low Vision PDF</string>
+    <string name="home_intro">Ein einfacher PDF-Reader, besonders für Menschen mit Sehbehinderung gedacht, aber für alle nutzbar.</string>
+    <string name="home_instructions">Öffnen Sie zum Start ☰ und wählen Sie Dokument öffnen. In der normalen Ansicht können Sie scrollen, zoomen, suchen und Text auswählen. Text Reflow passt lesbaren Text an den Bildschirm an.</string>
+    <string name="important">Wichtig</string>
+    <string name="home_warning">Text Reflow verändert das ursprüngliche Layout und kann Bilder, Spalten, Tabellen und Formatierungen weglassen. Verwenden Sie bei rechtlichen, medizinischen, steuerlichen Formularen oder anderen Dokumenten, bei denen das Originallayout wichtig ist, die ursprüngliche PDF-Ansicht oder eine dafür besser geeignete Anwendung.</string>
+    <string name="privacy">Datenschutz</string>
+    <string name="home_privacy">Die App öffnet nur Dokumente, die Sie auswählen. Sie benötigt keinen allgemeinen Zugriff auf Ihre Dateien und keine Internetverbindung.</string>
+
+    <string name="cannot_open_document">Dokument kann nicht geöffnet werden</string>
+    <string name="protected_document_message">Dieses Dokument ist passwortgeschützt. Dieser Reader verwaltet keine Passwörter. Öffnen Sie es mit einer anderen Anwendung.</string>
+    <string name="unreadable_document_message">Das Dokument ist beschädigt oder wird von diesem Reader nicht unterstützt. Öffnen Sie es mit einer anderen Anwendung.</string>
+
+    <string name="open_link_title">Externen Link öffnen?</string>
+    <string name="open_link_message">Dieser Link verlässt das Dokument:\n\n%1$s\n\nMit einer anderen Anwendung öffnen?</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="open_link">Link öffnen</string>
+    <string name="link_not_supported">Dieser Linktyp wird nicht unterstützt.</string>
+    <string name="no_app_for_link">Zum Öffnen dieses Links ist keine Anwendung verfügbar.</string>
+
+    <string name="reflow_not_ready">Text Reflow wird derzeit implementiert. Der normale PDF-Reader bleibt verfügbar.</string>
+</resources>

@@ -19,8 +19,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 
 import java.io.IOException;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements ReaderPdfFragment.Host {
     private static final String PDF_FRAGMENT_TAG = "pdf_viewer";
@@ -32,6 +34,24 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
     private static final String THEME_DARK = "dark";
     private static final String THEME_HIGH_CONTRAST = "high_contrast";
 
+    private static final String[] LANGUAGE_TAGS = {
+            "", "en", "it", "fr", "es", "de", "hr", "ru", "ar", "zh-CN", "ja"
+    };
+
+    private static final String[] LANGUAGE_LABELS = {
+            null,
+            "🇬🇧 English",
+            "🇮🇹 Italiano",
+            "🇫🇷 Français",
+            "🇪🇸 Español",
+            "🇩🇪 Deutsch",
+            "🇭🇷 Hrvatski",
+            "🇷🇺 Русский",
+            "🇸🇦 العربية",
+            "🇨🇳 简体中文",
+            "🇯🇵 日本語"
+    };
+
     private ReaderPdfFragment pdfViewerFragment;
     private View emptyState;
     private View menuPanel;
@@ -42,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
     private View pdfContainer;
     private TextView zoomValue;
     private RadioGroup themeGroup;
+    private Button languageButton;
 
     private final ActivityResultLauncher<String[]> openPdfLauncher =
             registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
@@ -65,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
         pdfContainer = findViewById(R.id.pdf_container);
         zoomValue = findViewById(R.id.zoom_value);
         themeGroup = findViewById(R.id.theme_group);
+        languageButton = findViewById(R.id.language_button);
 
         Button menuButton = findViewById(R.id.menu_button);
         Button openButton = findViewById(R.id.open_document_button);
@@ -124,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
                 Toast.makeText(this, R.string.reflow_not_ready, Toast.LENGTH_SHORT).show());
 
         closeProgramButton.setOnClickListener(v -> closeProgram());
+        languageButton.setOnClickListener(v -> showLanguageChooser());
 
         selectSavedThemeRadio();
         themeGroup.setOnCheckedChangeListener((group, checkedId) -> {
@@ -139,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
         configureMenuWidth();
         updateUiForDocumentState();
         applyPdfThemeToViewer();
+        updateLanguageButton();
 
         Intent launchIntent = getIntent();
         if (savedInstanceState == null
@@ -326,6 +350,83 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
                 .setMessage(messageRes)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
+    }
+
+    private void showLanguageChooser() {
+        String[] items = new String[LANGUAGE_TAGS.length];
+        items[0] = "🌐 " + getString(R.string.language_system);
+        for (int i = 1; i < items.length; i++) {
+            items[i] = LANGUAGE_LABELS[i];
+        }
+
+        int selected = selectedLanguageIndex();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.language)
+                .setSingleChoiceItems(items, selected, (dialog, which) -> {
+                    dialog.dismiss();
+                    closeMenu();
+
+                    LocaleListCompat locales = which == 0
+                            ? LocaleListCompat.getEmptyLocaleList()
+                            : LocaleListCompat.forLanguageTags(LANGUAGE_TAGS[which]);
+                    AppCompatDelegate.setApplicationLocales(locales);
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    private int selectedLanguageIndex() {
+        LocaleListCompat locales = AppCompatDelegate.getApplicationLocales();
+        if (locales.isEmpty()) {
+            return 0;
+        }
+        return languageIndexForLocale(locales.get(0));
+    }
+
+    private void updateLanguageButton() {
+        LocaleListCompat selected = AppCompatDelegate.getApplicationLocales();
+        Locale locale;
+        if (selected.isEmpty()) {
+            locale = getResources().getConfiguration().getLocales().get(0);
+        } else {
+            locale = selected.get(0);
+        }
+
+        int index = languageIndexForLocale(locale);
+        if (index > 0) {
+            languageButton.setText(LANGUAGE_LABELS[index]);
+        } else {
+            languageButton.setText("🌐 " + getString(R.string.language_system));
+        }
+    }
+
+    private int languageIndexForLocale(Locale locale) {
+        if (locale == null) {
+            return 0;
+        }
+
+        String language = locale.getLanguage();
+        for (int i = 1; i < LANGUAGE_TAGS.length; i++) {
+            Locale supported = Locale.forLanguageTag(LANGUAGE_TAGS[i]);
+            if (!supported.getLanguage().equalsIgnoreCase(language)) {
+                continue;
+            }
+
+            if ("zh".equalsIgnoreCase(language)) {
+                String script = locale.getScript();
+                String country = locale.getCountry();
+                if ("Hans".equalsIgnoreCase(script)
+                        || country.isEmpty()
+                        || "CN".equalsIgnoreCase(country)
+                        || "SG".equalsIgnoreCase(country)) {
+                    return i;
+                }
+                continue;
+            }
+
+            return i;
+        }
+        return 0;
     }
 
     private void closeProgram() {

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Privacy Low Vision PDF</string>
+
+    <string name="menu">القائمة</string>
+    <string name="menu_button_description">فتح القائمة</string>
+    <string name="open_document">فتح مستند</string>
+    <string name="search_text">البحث في النص</string>
+    <string name="zoom">التكبير</string>
+    <string name="zoom_out">تصغير</string>
+    <string name="zoom_in">تكبير</string>
+    <string name="zoom_default">100%</string>
+    <string name="zoom_percent">%1$d%%</string>
+
+    <string name="theme">المظهر</string>
+    <string name="theme_system">النظام</string>
+    <string name="theme_light">فاتح</string>
+    <string name="theme_dark">داكن</string>
+    <string name="theme_high_contrast">تباين عالٍ</string>
+
+    <string name="enable_reflow">تفعيل Text Reflow</string>
+    <string name="close_program">إغلاق البرنامج</string>
+
+    <string name="language">اللغة</string>
+    <string name="language_system">لغة النظام</string>
+
+    <string name="home_title">Privacy Low Vision PDF</string>
+    <string name="home_intro">قارئ PDF بسيط صُمم خصوصًا للأشخاص ضعاف البصر، ويمكن للجميع استخدامه.</string>
+    <string name="home_instructions">للبدء، افتح ☰ واختر فتح مستند. في العرض العادي يمكنك التمرير والتكبير والبحث وتحديد النص. يعمل Text Reflow على تكييف النص القابل للقراءة مع الشاشة.</string>
+    <string name="important">مهم</string>
+    <string name="home_warning">يغيّر Text Reflow التخطيط الأصلي وقد يحذف الصور والأعمدة والجداول والتنسيق. بالنسبة إلى المستندات القانونية أو الطبية أو الضريبية أو النماذج أو أي مستندات أخرى يكون فيها التخطيط الأصلي مهمًا، استخدم عرض PDF الأصلي أو تطبيقًا آخر أنسب.</string>
+    <string name="privacy">الخصوصية</string>
+    <string name="home_privacy">يفتح التطبيق المستندات التي تختارها فقط. لا يطلب وصولًا عامًا إلى ملفاتك ولا يحتاج إلى اتصال بالإنترنت.</string>
+
+    <string name="cannot_open_document">تعذر فتح المستند</string>
+    <string name="protected_document_message">هذا المستند محمي بكلمة مرور. هذا القارئ لا يدير كلمات المرور. استخدم تطبيقًا آخر لفتحه.</string>
+    <string name="unreadable_document_message">المستند تالف أو غير مدعوم في هذا القارئ. استخدم تطبيقًا آخر لفتحه.</string>
+
+    <string name="open_link_title">فتح رابط خارجي؟</string>
+    <string name="open_link_message">سيؤدي هذا الرابط إلى مغادرة المستند:\n\n%1$s\n\nهل تريد فتحه بتطبيق آخر؟</string>
+    <string name="cancel">إلغاء</string>
+    <string name="open_link">فتح الرابط</string>
+    <string name="link_not_supported">هذا النوع من الروابط غير مدعوم.</string>
+    <string name="no_app_for_link">لا يوجد تطبيق متاح لفتح هذا الرابط.</string>
+
+    <string name="reflow_not_ready">ميزة Text Reflow قيد التنفيذ. يظل قارئ PDF العادي متاحًا.</string>
+</resources>

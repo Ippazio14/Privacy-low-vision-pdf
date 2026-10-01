@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Privacy Low Vision PDF</string>
+
+    <string name="menu">メニュー</string>
+    <string name="menu_button_description">メニューを開く</string>
+    <string name="open_document">文書を開く</string>
+    <string name="search_text">テキストを検索</string>
+    <string name="zoom">ズーム</string>
+    <string name="zoom_out">縮小</string>
+    <string name="zoom_in">拡大</string>
+    <string name="zoom_default">100%</string>
+    <string name="zoom_percent">%1$d%%</string>
+
+    <string name="theme">テーマ</string>
+    <string name="theme_system">システム</string>
+    <string name="theme_light">ライト</string>
+    <string name="theme_dark">ダーク</string>
+    <string name="theme_high_contrast">ハイコントラスト</string>
+
+    <string name="enable_reflow">Text Reflow を有効にする</string>
+    <string name="close_program">プログラムを終了</string>
+
+    <string name="language">言語</string>
+    <string name="language_system">システム言語</string>
+
+    <string name="home_title">Privacy Low Vision PDF</string>
+    <string name="home_intro">特にロービジョンの方を想定したシンプルな PDF リーダーですが、どなたでも利用できます。</string>
+    <string name="home_instructions">開始するには ☰ を開き、「文書を開く」を選択します。通常表示では、スクロール、ズーム、検索、テキスト選択ができます。Text Reflow は読み取り可能なテキストを画面に合わせて表示します。</string>
+    <string name="important">重要</string>
+    <string name="home_warning">Text Reflow は元のレイアウトを変更し、画像、段組み、表、書式を省略する場合があります。法律、医療、税務、フォームなど元の配置が重要な文書では、元の PDF 表示または用途に適した別のアプリを使用してください。</string>
+    <string name="privacy">プライバシー</string>
+    <string name="home_privacy">このアプリは、ユーザーが選択した文書だけを開きます。ファイル全体へのアクセス権限は不要で、インターネット接続も必要ありません。</string>
+
+    <string name="cannot_open_document">文書を開けません</string>
+    <string name="protected_document_message">この文書はパスワードで保護されています。このリーダーではパスワードを扱いません。別のアプリで開いてください。</string>
+    <string name="unreadable_document_message">文書が破損しているか、このリーダーではサポートされていません。別のアプリで開いてください。</string>
+
+    <string name="open_link_title">外部リンクを開きますか？</string>
+    <string name="open_link_message">このリンクを開くと文書から移動します：\n\n%1$s\n\n別のアプリで開きますか？</string>
+    <string name="cancel">キャンセル</string>
+    <string name="open_link">リンクを開く</string>
+    <string name="link_not_supported">この種類のリンクはサポートされていません。</string>
+    <string name="no_app_for_link">このリンクを開けるアプリがありません。</string>
+
+    <string name="reflow_not_ready">Text Reflow は現在実装中です。通常の PDF リーダーは引き続き利用できます。</string>
+</resources>

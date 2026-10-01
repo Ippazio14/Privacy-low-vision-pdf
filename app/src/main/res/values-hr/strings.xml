@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Privacy Low Vision PDF</string>
+
+    <string name="menu">Izbornik</string>
+    <string name="menu_button_description">Otvori izbornik</string>
+    <string name="open_document">Otvori dokument</string>
+    <string name="search_text">Pretraži tekst</string>
+    <string name="zoom">Zumiranje</string>
+    <string name="zoom_out">Smanji</string>
+    <string name="zoom_in">Povećaj</string>
+    <string name="zoom_default">100%</string>
+    <string name="zoom_percent">%1$d%%</string>
+
+    <string name="theme">Tema</string>
+    <string name="theme_system">Sustav</string>
+    <string name="theme_light">Svijetla</string>
+    <string name="theme_dark">Tamna</string>
+    <string name="theme_high_contrast">Visoki kontrast</string>
+
+    <string name="enable_reflow">Omogući Text Reflow</string>
+    <string name="close_program">Zatvori program</string>
+
+    <string name="language">Jezik</string>
+    <string name="language_system">Jezik sustava</string>
+
+    <string name="home_title">Privacy Low Vision PDF</string>
+    <string name="home_intro">Jednostavan PDF čitač namijenjen osobito slabovidnim osobama, ali prikladan za sve.</string>
+    <string name="home_instructions">Za početak otvorite ☰ i odaberite Otvori dokument. U običnom prikazu možete pomicati, povećavati, pretraživati i označavati tekst. Text Reflow prilagođava čitljiv tekst zaslonu.</string>
+    <string name="important">Važno</string>
+    <string name="home_warning">Text Reflow mijenja izvorni raspored i može izostaviti slike, stupce, tablice i oblikovanje. Za pravne, medicinske, porezne dokumente, obrasce ili druge dokumente kod kojih je izvorni raspored važan, koristite izvorni PDF prikaz ili drugu prikladniju aplikaciju.</string>
+    <string name="privacy">Privatnost</string>
+    <string name="home_privacy">Aplikacija otvara samo dokumente koje odaberete. Ne zahtijeva opći pristup vašim datotekama niti internetsku vezu.</string>
+
+    <string name="cannot_open_document">Dokument se ne može otvoriti</string>
+    <string name="protected_document_message">Ovaj je dokument zaštićen lozinkom. Ovaj čitač ne upravlja lozinkama. Otvorite ga drugom aplikacijom.</string>
+    <string name="unreadable_document_message">Dokument je oštećen ili ga ovaj čitač ne podržava. Otvorite ga drugom aplikacijom.</string>
+
+    <string name="open_link_title">Otvoriti vanjsku poveznicu?</string>
+    <string name="open_link_message">Ova poveznica napustit će dokument:\n\n%1$s\n\nOtvoriti je drugom aplikacijom?</string>
+    <string name="cancel">Odustani</string>
+    <string name="open_link">Otvori poveznicu</string>
+    <string name="link_not_supported">Ova vrsta poveznice nije podržana.</string>
+    <string name="no_app_for_link">Nema dostupne aplikacije za otvaranje ove poveznice.</string>
+
+    <string name="reflow_not_ready">Text Reflow je u izradi. Obični PDF čitač i dalje je dostupan.</string>
+</resources>

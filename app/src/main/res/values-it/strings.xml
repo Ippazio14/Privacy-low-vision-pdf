@@ -21,6 +21,9 @@
     <string name="enable_reflow">Abilita Text Reflow</string>
     <string name="close_program">Chiudi programma</string>
 
+    <string name="language">Lingua</string>
+    <string name="language_system">Lingua di sistema</string>
+
     <string name="home_title">Privacy Low Vision PDF</string>
     <string name="home_intro">Un lettore PDF semplice, pensato soprattutto per persone ipovedenti, ma utilizzabile da tutti.</string>
     <string name="home_instructions">Per iniziare, apri ☰ e scegli Apri documento. Nella visualizzazione normale puoi scorrere, ingrandire, cercare e selezionare il testo. Text Reflow adatta il testo leggibile allo schermo.</string>
