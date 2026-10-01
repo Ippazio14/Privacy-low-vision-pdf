@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
     private View documentMenuControls;
     private View documentMenuActions;
     private View searchButton;
+    private View pdfContainer;
     private TextView zoomValue;
     private RadioGroup themeGroup;
 
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
         documentMenuControls = findViewById(R.id.document_menu_controls);
         documentMenuActions = findViewById(R.id.document_menu_actions);
         searchButton = findViewById(R.id.search_button);
+        pdfContainer = findViewById(R.id.pdf_container);
         zoomValue = findViewById(R.id.zoom_value);
         themeGroup = findViewById(R.id.theme_group);
 
@@ -86,9 +88,24 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
             if (!hasOpenDocument()) {
                 return;
             }
+
+            boolean activateSearch = !pdfViewerFragment.isTextSearchActive();
             closeMenu();
-            pdfViewerFragment.setTextSearchActive(
-                    !pdfViewerFragment.isTextSearchActive());
+
+            if (!activateSearch) {
+                pdfViewerFragment.setTextSearchActive(false);
+                return;
+            }
+
+            // Wait until the menu has been removed from the current layout pass before showing
+            // AndroidX's search bar. On first use, activating it in the same frame as closing the
+            // menu can leave the search view temporarily laid out around mid-screen.
+            pdfContainer.postOnAnimation(() ->
+                    pdfContainer.postOnAnimation(() -> {
+                        if (hasOpenDocument() && !pdfViewerFragment.isTextSearchActive()) {
+                            pdfViewerFragment.setTextSearchActive(true);
+                        }
+                    }));
         });
 
         zoomOutButton.setOnClickListener(v -> {
