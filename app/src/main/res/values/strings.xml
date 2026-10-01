@@ -19,7 +19,7 @@
     <string name="theme_high_contrast">High contrast</string>
 
     <string name="enable_reflow">Enable Text Reflow</string>
-    <string name="close_document">Close document</string>
+    <string name="close_program">Close program</string>
 
     <string name="home_title">Privacy Low Vision PDF</string>
     <string name="home_intro">A simple PDF reader designed especially for people with low vision, but usable by everyone.</string>
