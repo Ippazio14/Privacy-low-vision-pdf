@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Privacy Low Vision PDF</string>
+
+    <string name="menu">Меню</string>
+    <string name="menu_button_description">Відкрити меню</string>
+    <string name="open_document">Відкрити документ</string>
+    <string name="search_text">Пошук у тексті</string>
+    <string name="zoom">Масштаб</string>
+    <string name="zoom_out">Зменшити</string>
+    <string name="zoom_in">Збільшити</string>
+    <string name="zoom_default">100%</string>
+    <string name="zoom_percent">%1$d%%</string>
+
+    <string name="theme">Тема</string>
+    <string name="theme_system">Системна</string>
+    <string name="theme_light">Світла</string>
+    <string name="theme_dark">Темна</string>
+    <string name="theme_high_contrast">Висока контрастність</string>
+
+    <string name="enable_reflow">Увімкнути Text Reflow</string>
+    <string name="close_program">Закрити програму</string>
+
+    <string name="language">Мова</string>
+    <string name="language_system">Мова системи</string>
+
+    <string name="home_title">Privacy Low Vision PDF</string>
+    <string name="home_intro">Простий PDF-читач, створений насамперед для людей зі слабким зором, але придатний для всіх.</string>
+    <string name="home_instructions">Щоб почати, відкрийте ☰ і виберіть «Відкрити документ». У звичайному режимі можна прокручувати, масштабувати, шукати та виділяти текст. Text Reflow пристосовує читабельний текст до екрана.</string>
+    <string name="important">Важливо</string>
+    <string name="home_warning">Text Reflow змінює початкове компонування та може не відображати зображення, колонки, таблиці й форматування. Для юридичних, медичних, податкових документів, форм та інших документів, де важливе оригінальне розташування, використовуйте звичайний PDF-режим або іншу відповідну програму.</string>
+    <string name="privacy">Конфіденційність</string>
+    <string name="home_privacy">Програма відкриває лише документи, які ви обираєте. Вона не потребує загального доступу до файлів і не потребує підключення до Інтернету.</string>
+
+    <string name="cannot_open_document">Не вдалося відкрити документ</string>
+    <string name="protected_document_message">Цей документ захищено паролем. Цей читач не працює з паролями. Відкрийте документ в іншій програмі.</string>
+    <string name="unreadable_document_message">Документ пошкоджено або цей читач його не підтримує. Відкрийте його в іншій програмі.</string>
+
+    <string name="open_link_title">Відкрити зовнішнє посилання?</string>
+    <string name="open_link_message">Це посилання виведе вас із документа:\n\n%1$s\n\nВідкрити його в іншій програмі?</string>
+    <string name="cancel">Скасувати</string>
+    <string name="open_link">Відкрити посилання</string>
+    <string name="link_not_supported">Цей тип посилання не підтримується.</string>
+    <string name="no_app_for_link">Немає програми для відкриття цього посилання.</string>
+
+    <string name="reflow_not_ready">Text Reflow ще реалізується. Звичайний PDF-читач залишається доступним.</string>
+</resources>

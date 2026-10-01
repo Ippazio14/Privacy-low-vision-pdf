@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
     private static final String THEME_HIGH_CONTRAST = "high_contrast";
 
     private static final String[] LANGUAGE_TAGS = {
-            "", "en", "it", "fr", "es", "de", "hr", "ru", "ar", "zh-CN", "ja"
+            "", "en", "it", "fr", "es", "de", "hr", "ru", "uk", "ar", "zh-CN", "ja"
     };
 
     private static final String[] LANGUAGE_LABELS = {
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
             "🇩🇪 Deutsch",
             "🇭🇷 Hrvatski",
             "🇷🇺 Русский",
+            "🇺🇦 Українська",
             "🇸🇦 العربية",
             "🇨🇳 简体中文",
             "🇯🇵 日本語"
