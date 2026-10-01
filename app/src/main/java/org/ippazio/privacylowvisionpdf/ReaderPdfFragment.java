@@ -72,6 +72,7 @@ public class ReaderPdfFragment extends PdfViewerFragment {
     @Override
     public void onPdfViewCreated(@NonNull PdfView view) {
         pdfView = view;
+        pdfView.setFormFillingEnabled(false);
         pdfView.addOnViewportChangedListener(viewportListener);
         pdfView.addOnGestureStateChangedListener(gestureListener);
         applyPdfTheme();
