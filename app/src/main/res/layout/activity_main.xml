@@ -240,16 +240,16 @@
                     android:minHeight="56dp"
                     android:text="@string/enable_reflow"
                     android:textSize="18sp" />
-
-                <Button
-                    android:id="@+id/close_document_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:minHeight="56dp"
-                    android:text="@string/close_document"
-                    android:textSize="18sp" />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/close_program_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:minHeight="56dp"
+                android:text="@string/close_program"
+                android:textSize="18sp" />
         </LinearLayout>
     </ScrollView>
 
