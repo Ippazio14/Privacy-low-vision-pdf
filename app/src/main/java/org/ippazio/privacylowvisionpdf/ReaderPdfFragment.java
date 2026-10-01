@@ -195,11 +195,14 @@ public class ReaderPdfFragment extends PdfViewerFragment {
                     0f, 0f, 0f, 1f, 0f
             });
         } else {
-            float contrast = 1.8f;
-            float offset = 128f * (1f - contrast);
-            float r = 0.2126f * contrast;
-            float g = 0.7152f * contrast;
-            float b = 0.0722f * contrast;
+            // High contrast is deliberately different from the ordinary light rendering:
+            // convert to luminance, invert it and increase contrast so text becomes bright on a
+            // dark background while mid-tones are pushed apart.
+            float contrast = 2.2f;
+            float offset = 128f * (1f + contrast);
+            float r = -0.2126f * contrast;
+            float g = -0.7152f * contrast;
+            float b = -0.0722f * contrast;
             matrix = new ColorMatrix(new float[]{
                     r, g, b, 0f, offset,
                     r, g, b, 0f, offset,
