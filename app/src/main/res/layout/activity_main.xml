@@ -262,13 +262,13 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <Button
-                    android:id="@+id/reflow_button"
+                <CheckBox
+                    android:id="@+id/reflow_checkbox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:layout_marginTop="18dp"
-                    android:minHeight="56dp"
-                    android:text="@string/enable_reflow"
+                    android:gravity="center_vertical"
+                    android:text="@string/text_reflow"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -282,6 +282,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="@string/font_size"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -316,15 +317,6 @@
                         android:text="+"
                         android:textSize="24sp" />
                 </LinearLayout>
-
-                <Button
-                    android:id="@+id/exit_reflow_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:minHeight="56dp"
-                    android:text="@string/exit_reflow"
-                    android:textSize="18sp" />
             </LinearLayout>
 
             <Button

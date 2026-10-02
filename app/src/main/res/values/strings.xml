@@ -19,6 +19,7 @@
     <string name="theme_high_contrast">High contrast</string>
 
     <string name="enable_reflow">Enable Text Reflow</string>
+    <string name="text_reflow">Text Reflow</string>
     <string name="font_size">Text size</string>
     <string name="exit_reflow">Exit Text Reflow</string>
     <string name="reflow_loading">Preparing Text Reflow…</string>
