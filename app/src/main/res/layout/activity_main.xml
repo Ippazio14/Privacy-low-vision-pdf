@@ -10,30 +10,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <ScrollView
-        android:id="@+id/reflow_container"
+    <ListView
+        android:id="@+id/reflow_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/colorSurface"
-        android:fillViewport="true"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/reflow_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:breakStrategy="high_quality"
-            android:hyphenationFrequency="normal"
-            android:lineSpacingExtra="8sp"
-            android:paddingStart="28dp"
-            android:paddingTop="88dp"
-            android:paddingEnd="28dp"
-            android:paddingBottom="48dp"
-            android:textAlignment="viewStart"
-            android:textDirection="firstStrong"
-            android:textIsSelectable="true"
-            android:textSize="26sp" />
-    </ScrollView>
+        android:clipToPadding="false"
+        android:dividerHeight="0dp"
+        android:listSelector="@android:color/transparent"
+        android:paddingTop="88dp"
+        android:paddingBottom="48dp"
+        android:visibility="gone" />
 
     <ScrollView
         android:id="@+id/empty_state"

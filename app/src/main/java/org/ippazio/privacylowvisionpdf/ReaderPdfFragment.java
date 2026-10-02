@@ -17,7 +17,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.pdf.PdfDocument;
 import androidx.pdf.PdfPoint;
 import androidx.pdf.content.ExternalLink;
-import androidx.pdf.content.PdfPageTextContent;
 import androidx.pdf.view.PdfView;
 import androidx.pdf.viewer.fragment.PdfViewerFragment;
 
@@ -177,38 +176,32 @@ public class ReaderPdfFragment extends PdfViewerFragment {
         changeZoom(1f / 1.20f);
     }
 
-    public void extractReflowText(@NonNull ReflowTextCallback callback) {
+    public int getReflowPageCount() {
+        PdfDocument document = loadedDocument;
+        return document == null ? 0 : document.getPageCount();
+    }
+
+    public int getCurrentPdfPage() {
+        if (pdfView == null) {
+            return 0;
+        }
+        return Math.max(0, pdfView.getFirstVisiblePage());
+    }
+
+    public void extractReflowPageText(
+            int pageNumber,
+            @NonNull ReflowTextCallback callback) {
         PdfDocument document = loadedDocument;
         if (document == null) {
             callback.onError(new IllegalStateException("PDF document is not ready"));
             return;
         }
-
-        int generation = ++reflowExtractionGeneration;
-        StringBuilder output = new StringBuilder();
-        extractReflowPage(document, 0, document.getPageCount(), output, generation, callback);
-    }
-
-    public void cancelReflowExtraction() {
-        reflowExtractionGeneration++;
-    }
-
-    private void extractReflowPage(
-            @NonNull PdfDocument document,
-            int pageNumber,
-            int pageCount,
-            @NonNull StringBuilder output,
-            int generation,
-            @NonNull ReflowTextCallback callback) {
-        if (generation != reflowExtractionGeneration || document != loadedDocument) {
+        if (pageNumber < 0 || pageNumber >= document.getPageCount()) {
+            callback.onError(new IllegalArgumentException("Invalid PDF page"));
             return;
         }
 
-        if (pageNumber >= pageCount) {
-            callback.onTextReady(output.toString().trim());
-            return;
-        }
-
+        int generation = reflowExtractionGeneration;
         Continuation<PdfDocument.PdfPageContent> continuation =
                 new Continuation<PdfDocument.PdfPageContent>() {
                     @NonNull
@@ -222,8 +215,6 @@ public class ReaderPdfFragment extends PdfViewerFragment {
                         handleReflowPageResult(
                                 document,
                                 pageNumber,
-                                pageCount,
-                                output,
                                 generation,
                                 callback,
                                 result);
@@ -236,24 +227,25 @@ public class ReaderPdfFragment extends PdfViewerFragment {
                 handleReflowPageResult(
                         document,
                         pageNumber,
-                        pageCount,
-                        output,
                         generation,
                         callback,
                         result);
             }
         } catch (Throwable error) {
-            if (generation == reflowExtractionGeneration) {
+            if (generation == reflowExtractionGeneration
+                    && document == loadedDocument) {
                 callback.onError(error);
             }
         }
     }
 
+    public void cancelReflowExtraction() {
+        reflowExtractionGeneration++;
+    }
+
     private void handleReflowPageResult(
             @NonNull PdfDocument document,
             int pageNumber,
-            int pageCount,
-            @NonNull StringBuilder output,
             int generation,
             @NonNull ReflowTextCallback callback,
             @NonNull Object result) {
@@ -264,64 +256,13 @@ public class ReaderPdfFragment extends PdfViewerFragment {
         try {
             ResultKt.throwOnFailure(result);
             PdfDocument.PdfPageContent pageContent = (PdfDocument.PdfPageContent) result;
-            appendMinimalReflowPage(pageContent, output);
-
-            // Post the next page to avoid building a deep Java call stack if a page completes
-            // immediately. The extraction itself remains asynchronous inside AndroidX PDF.
-            if (pdfView != null) {
-                pdfView.post(() -> extractReflowPage(
-                        document,
-                        pageNumber + 1,
-                        pageCount,
-                        output,
-                        generation,
-                        callback));
-            } else {
-                extractReflowPage(
-                        document,
-                        pageNumber + 1,
-                        pageCount,
-                        output,
-                        generation,
-                        callback);
-            }
+            callback.onTextReady(ReflowPostProcessor.processPage(pageContent, pageNumber));
         } catch (Throwable error) {
-            if (generation == reflowExtractionGeneration) {
+            if (generation == reflowExtractionGeneration
+                    && document == loadedDocument) {
                 callback.onError(error);
             }
         }
-    }
-
-    private void appendMinimalReflowPage(
-            @Nullable PdfDocument.PdfPageContent pageContent,
-            @NonNull StringBuilder output) {
-        if (pageContent == null) {
-            return;
-        }
-
-        for (PdfPageTextContent textContent : pageContent.getTextContents()) {
-            // Bounds are deliberately left untouched in this first version. They will feed the
-            // later post-filter for columns, repeated headers and table detection.
-            textContent.getBounds();
-
-            String text = minimalPostFilter(textContent.getText());
-            if (text.isEmpty()) {
-                continue;
-            }
-
-            if (output.length() > 0) {
-                output.append("\n\n");
-            }
-            output.append(text);
-        }
-    }
-
-    @NonNull
-    private String minimalPostFilter(@Nullable String text) {
-        if (text == null) {
-            return "";
-        }
-        return text.replace("\r\n", "\n").replace('\r', '\n').trim();
     }
 
     private void changeZoom(float factor) {

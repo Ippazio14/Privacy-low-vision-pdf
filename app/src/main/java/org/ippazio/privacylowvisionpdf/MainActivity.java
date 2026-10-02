@@ -7,12 +7,18 @@ import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+import android.text.Layout;
+import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.RadioGroup;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -40,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
     private static final int REFLOW_TEXT_SIZE_MIN = 18;
     private static final int REFLOW_TEXT_SIZE_MAX = 52;
     private static final int REFLOW_TEXT_SIZE_STEP = 2;
+    private static final int REFLOW_PREFETCH_PAGES = 2;
 
     private static final String[] LANGUAGE_TAGS = {
             "", "en", "it", "fr", "es", "de", "hr", "ru", "uk", "ar", "zh-CN", "ja"
@@ -71,16 +78,20 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
     private View searchButton;
     private View pdfContainer;
     private View themeTitle;
-    private ScrollView reflowContainer;
-    private TextView reflowText;
+    private ListView reflowList;
     private TextView reflowFontValue;
     private TextView zoomValue;
     private RadioGroup themeGroup;
     private Button languageButton;
 
+    private final SparseArray<String> reflowPageText = new SparseArray<>();
+    private final SparseBooleanArray reflowPageLoading = new SparseBooleanArray();
+    private ReflowPageAdapter reflowAdapter;
+
     private boolean reflowMode;
     private int reflowFontSp;
     private int reflowRequestId;
+    private int reflowPageCount;
 
     private final ActivityResultLauncher<String[]> openPdfLauncher =
             registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
@@ -105,8 +116,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
         searchButton = findViewById(R.id.search_button);
         pdfContainer = findViewById(R.id.pdf_container);
         themeTitle = findViewById(R.id.theme_title);
-        reflowContainer = findViewById(R.id.reflow_container);
-        reflowText = findViewById(R.id.reflow_text);
+        reflowList = findViewById(R.id.reflow_list);
         reflowFontValue = findViewById(R.id.reflow_font_value);
         zoomValue = findViewById(R.id.zoom_value);
         themeGroup = findViewById(R.id.theme_group);
@@ -124,6 +134,30 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
 
         pdfViewerFragment = (ReaderPdfFragment) getSupportFragmentManager()
                 .findFragmentByTag(PDF_FRAGMENT_TAG);
+
+        reflowAdapter = new ReflowPageAdapter();
+        reflowList.setAdapter(reflowAdapter);
+        reflowList.setItemsCanFocus(true);
+        reflowList.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // No special action is needed. Page extraction follows the visible window.
+            }
+
+            @Override
+            public void onScroll(
+                    AbsListView view,
+                    int firstVisibleItem,
+                    int visibleItemCount,
+                    int totalItemCount) {
+                if (!reflowMode || visibleItemCount <= 0) {
+                    return;
+                }
+                requestReflowRange(
+                        firstVisibleItem - REFLOW_PREFETCH_PAGES,
+                        firstVisibleItem + visibleItemCount - 1 + REFLOW_PREFETCH_PAGES);
+            }
+        });
 
         reflowFontSp = getSharedPreferences(UI_PREFS, MODE_PRIVATE)
                 .getInt(PREF_REFLOW_TEXT_SIZE, REFLOW_TEXT_SIZE_DEFAULT);
@@ -297,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
         if (reflowMode) {
             emptyState.setVisibility(View.GONE);
             pdfContainer.setVisibility(View.GONE);
-            reflowContainer.setVisibility(View.VISIBLE);
+            reflowList.setVisibility(View.VISIBLE);
             documentOpenRow.setVisibility(View.GONE);
             searchButton.setVisibility(View.GONE);
             documentMenuControls.setVisibility(View.GONE);
@@ -309,7 +343,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
             return;
         }
 
-        reflowContainer.setVisibility(View.GONE);
+        reflowList.setVisibility(View.GONE);
         pdfContainer.setVisibility(View.VISIBLE);
         emptyState.setVisibility(open ? View.GONE : View.VISIBLE);
         documentOpenRow.setVisibility(View.VISIBLE);
@@ -376,42 +410,91 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
             return;
         }
 
+        int pageCount = pdfViewerFragment.getReflowPageCount();
+        if (pageCount <= 0) {
+            return;
+        }
+
         if (pdfViewerFragment.isTextSearchActive()) {
             pdfViewerFragment.setTextSearchActive(false);
         }
 
         closeMenu();
         reflowMode = true;
-        int requestId = ++reflowRequestId;
-        reflowText.setText(R.string.reflow_loading);
-        reflowContainer.scrollTo(0, 0);
+        reflowRequestId++;
+        reflowPageCount = pageCount;
+        reflowPageText.clear();
+        reflowPageLoading.clear();
+        reflowAdapter.notifyDataSetChanged();
         updateUiForDocumentState();
 
-        pdfViewerFragment.extractReflowText(new ReaderPdfFragment.ReflowTextCallback() {
-            @Override
-            public void onTextReady(@androidx.annotation.NonNull String text) {
-                runOnUiThread(() -> {
-                    if (!reflowMode || requestId != reflowRequestId
-                            || isFinishing() || isDestroyed()) {
-                        return;
-                    }
-                    reflowText.setText(text.isEmpty() ? getString(R.string.reflow_no_text) : text);
-                    reflowContainer.scrollTo(0, 0);
-                });
-            }
+        int startPage = Math.max(
+                0,
+                Math.min(reflowPageCount - 1, pdfViewerFragment.getCurrentPdfPage()));
+        requestReflowRange(
+                startPage - REFLOW_PREFETCH_PAGES,
+                startPage + REFLOW_PREFETCH_PAGES);
+        reflowList.setSelection(startPage);
+    }
 
-            @Override
-            public void onError(@androidx.annotation.NonNull Throwable error) {
-                runOnUiThread(() -> {
-                    if (!reflowMode || requestId != reflowRequestId
-                            || isFinishing() || isDestroyed()) {
-                        return;
+    private void requestReflowRange(int fromPage, int toPage) {
+        if (!reflowMode || pdfViewerFragment == null || reflowPageCount <= 0) {
+            return;
+        }
+
+        int from = Math.max(0, fromPage);
+        int to = Math.min(reflowPageCount - 1, toPage);
+        for (int page = from; page <= to; page++) {
+            requestReflowPage(page);
+        }
+    }
+
+    private void requestReflowPage(int pageNumber) {
+        if (!reflowMode
+                || pdfViewerFragment == null
+                || pageNumber < 0
+                || pageNumber >= reflowPageCount
+                || reflowPageText.get(pageNumber) != null
+                || reflowPageLoading.get(pageNumber)) {
+            return;
+        }
+
+        int requestId = reflowRequestId;
+        reflowPageLoading.put(pageNumber, true);
+
+        pdfViewerFragment.extractReflowPageText(
+                pageNumber,
+                new ReaderPdfFragment.ReflowTextCallback() {
+                    @Override
+                    public void onTextReady(@androidx.annotation.NonNull String text) {
+                        runOnUiThread(() -> {
+                            if (!reflowMode
+                                    || requestId != reflowRequestId
+                                    || isFinishing()
+                                    || isDestroyed()) {
+                                return;
+                            }
+                            reflowPageLoading.delete(pageNumber);
+                            reflowPageText.put(pageNumber, text);
+                            reflowAdapter.notifyDataSetChanged();
+                        });
                     }
-                    reflowText.setText(R.string.reflow_no_text);
-                    reflowContainer.scrollTo(0, 0);
+
+                    @Override
+                    public void onError(@androidx.annotation.NonNull Throwable error) {
+                        runOnUiThread(() -> {
+                            if (!reflowMode
+                                    || requestId != reflowRequestId
+                                    || isFinishing()
+                                    || isDestroyed()) {
+                                return;
+                            }
+                            reflowPageLoading.delete(pageNumber);
+                            reflowPageText.put(pageNumber, "");
+                            reflowAdapter.notifyDataSetChanged();
+                        });
+                    }
                 });
-            }
-        });
     }
 
     private void exitReflowMode() {
@@ -421,10 +504,13 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
 
         reflowMode = false;
         reflowRequestId++;
+        reflowPageCount = 0;
+        reflowPageText.clear();
+        reflowPageLoading.clear();
         if (pdfViewerFragment != null) {
             pdfViewerFragment.cancelReflowExtraction();
         }
-        reflowText.setText("");
+        reflowAdapter.notifyDataSetChanged();
         updateUiForDocumentState();
         closeMenu();
     }
@@ -437,20 +523,37 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
             return;
         }
 
+        int firstVisible = -1;
+        int topOffset = 0;
+        if (reflowMode && reflowList != null) {
+            firstVisible = reflowList.getFirstVisiblePosition();
+            View firstChild = reflowList.getChildAt(0);
+            if (firstChild != null) {
+                topOffset = firstChild.getTop();
+            }
+        }
+
         reflowFontSp = newSize;
         getSharedPreferences(UI_PREFS, MODE_PRIVATE)
                 .edit()
                 .putInt(PREF_REFLOW_TEXT_SIZE, reflowFontSp)
                 .apply();
         applyReflowFontSize();
+
+        if (reflowMode && firstVisible >= 0) {
+            final int restorePosition = firstVisible;
+            final int restoreOffset = topOffset;
+            reflowList.post(() ->
+                    reflowList.setSelectionFromTop(restorePosition, restoreOffset));
+        }
     }
 
     private void applyReflowFontSize() {
-        if (reflowText != null) {
-            reflowText.setTextSize(TypedValue.COMPLEX_UNIT_SP, reflowFontSp);
-        }
         if (reflowFontValue != null) {
             reflowFontValue.setText(reflowFontSp + " sp");
+        }
+        if (reflowAdapter != null) {
+            reflowAdapter.notifyDataSetChanged();
         }
     }
 
@@ -635,6 +738,58 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
             return;
         }
         super.onBackPressed();
+    }
+
+    private final class ReflowPageAdapter extends BaseAdapter {
+        @Override
+        public int getCount() {
+            return reflowMode ? reflowPageCount : 0;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return reflowPageText.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView textView;
+            if (convertView instanceof TextView) {
+                textView = (TextView) convertView;
+            } else {
+                textView = new TextView(MainActivity.this);
+                textView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+                textView.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
+                textView.setTextIsSelectable(true);
+                textView.setBreakStrategy(Layout.BREAK_STRATEGY_HIGH_QUALITY);
+                textView.setHyphenationFrequency(Layout.HYPHENATION_FREQUENCY_NORMAL);
+                textView.setLineSpacing(dp(8), 1f);
+            }
+
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, reflowFontSp);
+            textView.setPadding(dp(28), dp(10), dp(28), dp(18));
+
+            String pageText = reflowPageText.get(position);
+            if (pageText == null) {
+                textView.setMinHeight(dp(180));
+                textView.setText(R.string.reflow_loading);
+                requestReflowPage(position);
+            } else {
+                textView.setMinHeight(pageText.isEmpty() ? dp(1) : 0);
+                textView.setText(pageText);
+            }
+            return textView;
+        }
     }
 
     private enum DocumentCheck {
