@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Privacy Low Vision PDF</string>
+    <string name="product_name" translatable="false">Easy PDF Vision</string>
+    <string name="app_name">Easy PDF Vision</string>
 
     <string name="menu">Menu</string>
     <string name="menu_button_description">Open menu</string>
@@ -28,14 +29,20 @@
 
     <string name="language">Language</string>
     <string name="language_system">System language</string>
+    <string name="help">Help</string>
+    <string name="continue_label">Continue</string>
+    <string name="close">Close</string>
 
-    <string name="home_title">Privacy Low Vision PDF</string>
+    <string name="home_title">Easy PDF Vision</string>
+    <string name="home_hint">☰  Open document</string>
     <string name="home_intro">A simple PDF reader designed especially for people with low vision, but usable by everyone.</string>
     <string name="home_instructions">To begin, open ☰ and choose Open document. In normal view you can scroll, zoom, search and select text. Text Reflow is intended for continuous reading such as books, magazines, scientific articles and newspaper pages.</string>
     <string name="important">Important</string>
     <string name="home_warning">Text Reflow is not a faithful copy of the original layout. It may change reading order and omit images or formatting. In this first experimental version, tables and complex layouts may still appear as plain text or in the wrong order. Do not use Text Reflow for medical, financial, legal, tax, form-based or other documents where layout or structure matters. Use the original PDF view instead.</string>
     <string name="privacy">Privacy</string>
     <string name="home_privacy">The app opens only documents you choose. It does not require general access to your files and it does not need an Internet connection.</string>
+
+    <string name="help_body">Easy PDF Vision is a free and open-source (FOSS) application for reading PDF documents in a simple, accessible, and privacy-respecting way.\n\nFeatures:\n\n• reading PDF documents in normal mode and Text Reflow, especially useful for people with low vision\n• maximum privacy: no account, no general access to files, no advertising, no tracking\n• ease of use\n• interface designed to reduce visual fatigue\n\nEasy PDF Vision does not require:\n\n• registration\n• an account\n• Internet access\n• technical or profiling cookies\n• general access to all files or media on the device\n\nThe application will only have access to the document selected by the user.\n\nUSAGE\n\nUse the ☰ button to open the menu and select “Open document” to choose the PDF you want to read, granting the related permission if requested.\n\nIn normal mode, the document is displayed while preserving the original PDF layout.\n\nYou can:\n\n• zoom in or out using the − and + buttons\n• use the two-finger gesture to zoom\n• search or select text\n\nBy enabling Text Reflow, the text is adapted to the width of the screen to make reading easier.\n\nIn this mode:\n\n• the − and + buttons change the text size\n• the two-finger gesture changes the text size\n• the text is reformatted for more continuous reading\n• the original PDF layout is not preserved\n\nText Reflow may make mistakes and is especially suitable for:\n\n• books\n• articles\n• magazines\n• newspapers\n\nDo not use it for documents where graphical layout is essential, for example documents containing tables, images, or complex structures, such as:\n\n• forms\n• invoices\n• tax or financial documents\n• medical or legal documents</string>
 
     <string name="cannot_open_document">Cannot open document</string>
     <string name="protected_document_message">This document is password protected. This reader does not manage passwords. Use another application to open it.</string>

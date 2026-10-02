@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Privacy Low Vision PDF</string>
+    <string name="app_name">Easy PDF Vision</string>
 
     <string name="menu">Menu</string>
     <string name="menu_button_description">Apri menu</string>
@@ -19,6 +19,7 @@
     <string name="theme_high_contrast">Alto contrasto</string>
 
     <string name="enable_reflow">Abilita Text Reflow</string>
+    <string name="text_reflow">Text Reflow</string>
     <string name="font_size">Dimensione carattere</string>
     <string name="exit_reflow">Esci da Text Reflow</string>
     <string name="reflow_loading">Preparazione Text Reflow…</string>
@@ -27,14 +28,20 @@
 
     <string name="language">Lingua</string>
     <string name="language_system">Lingua di sistema</string>
+    <string name="help">Help</string>
+    <string name="continue_label">Continua</string>
+    <string name="close">Chiudi</string>
 
-    <string name="home_title">Privacy Low Vision PDF</string>
+    <string name="home_title">Easy PDF Vision</string>
+    <string name="home_hint">☰  Apri documento</string>
     <string name="home_intro">Un lettore PDF semplice, pensato soprattutto per persone ipovedenti, ma utilizzabile da tutti.</string>
     <string name="home_instructions">Per iniziare, apri ☰ e scegli Apri documento. Nella visualizzazione normale puoi scorrere, ingrandire, cercare e selezionare il testo. Text Reflow è pensato per la lettura continua di libri, riviste, articoli scientifici e pagine di quotidiano.</string>
     <string name="important">Importante</string>
     <string name="home_warning">Text Reflow non è una copia fedele dell’impaginazione originale. Può cambiare l’ordine di lettura e omettere immagini o formattazione. In questa prima versione sperimentale, tabelle e impaginazioni complesse possono ancora comparire come testo semplice o nell’ordine sbagliato. Non usare Text Reflow per documenti medici, finanziari, legali, fiscali, moduli o altri documenti in cui struttura e impaginazione sono importanti. Usa invece la visualizzazione PDF originale.</string>
     <string name="privacy">Privacy</string>
     <string name="home_privacy">L’app apre solo i documenti scelti dall’utente. Non richiede accesso generale ai file e non necessita di connessione Internet.</string>
+
+    <string name="help_body">Easy PDF Vision è un’applicazione gratuita e open source (FOSS) per leggere documenti PDF in modo semplice, accessibile e rispettoso della privacy.\n\nCaratteristiche:\n\n• lettura di documenti PDF in modalità normale e Text Reflow, particolarmente utile per persone con ridotta capacità visiva\n• massima privacy: nessun account, nessun accesso generale ai file, nessuna pubblicità, nessun tracciamento\n• semplicità d’uso\n• interfaccia pensata per ridurre l’affaticamento visivo\n\nEasy PDF Vision non richiede:\n\n• registrazione\n• account\n• accesso a Internet\n• cookie tecnici o di profilazione\n• accesso generale a tutti i file o ai contenuti multimediali del dispositivo\n\nL’applicazione avrà accesso solo al documento scelto dall’utente.\n\nUTILIZZO\n\nUsare il pulsante ☰ per accedere al menu e selezionare “Apri documento” per scegliere il PDF da leggere, concedendo il relativo permesso se richiesto.\n\nIn modalità normale il documento viene mostrato mantenendo l’impaginazione originale del PDF.\n\nÈ possibile:\n\n• ingrandire o ridurre con i pulsanti − e +\n• usare il gesto con due dita per lo zoom\n• cercare o selezionare testo\n\nAttivando Text Reflow, il testo viene adattato alla larghezza dello schermo per facilitare la lettura.\n\nIn questa modalità:\n\n• i pulsanti − e + modificano la dimensione del carattere\n• il gesto con due dita modifica la dimensione del carattere\n• il testo viene reimpaginato per una lettura più continua\n• l’impaginazione originale del PDF non viene mantenuta\n\nLa modalità Text Reflow può commettere errori ed è adatta soprattutto per:\n\n• libri\n• articoli\n• riviste\n• giornali\n\nNon utilizzarla per documenti in cui la disposizione grafica è essenziale, ad esempio documenti con tabelle, immagini o strutture complesse, come:\n\n• moduli\n• fatture\n• documenti fiscali o finanziari\n• documenti medici o legali</string>
 
     <string name="cannot_open_document">Impossibile aprire il documento</string>
     <string name="protected_document_message">Documento protetto da password. Questo lettore non gestisce password. Utilizza un’altra applicazione per aprirlo.</string>

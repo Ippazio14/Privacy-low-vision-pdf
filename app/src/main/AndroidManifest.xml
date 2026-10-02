@@ -5,10 +5,14 @@
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name"
+        android:label="@string/product_name"
         android:localeConfig="@xml/locales_config"
         android:supportsRtl="true"
         android:theme="@style/Theme.PrivacyLowVisionPdf">
+
+        <activity
+            android:name=".HelpActivity"
+            android:exported="false" />
 
         <activity
             android:name=".MainActivity"

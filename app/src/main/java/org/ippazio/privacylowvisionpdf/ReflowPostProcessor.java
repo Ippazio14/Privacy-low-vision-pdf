@@ -305,21 +305,24 @@ final class ReflowPostProcessor {
 
     @NonNull
     private static String normalizeContinuousText(@NonNull Block block) {
-        String[] rawLines = normalizeNewlines(block.rawText).split("\\n", -1);
+        List<String> sourceLines = buildSourceLines(block);
         StringBuilder output = new StringBuilder();
 
         boolean paragraphBreakPending = false;
         boolean previousWasList = false;
         String previousLine = null;
         RectF previousRect = null;
+        int previousLineLength = 0;
         int boundsIndex = 0;
 
         float typicalHeight = medianRectHeight(block.lineBounds);
         float typicalGap = medianLineGap(block.lineBounds, typicalHeight);
         float leftEdge = block.box.left;
         float blockWidth = Math.max(1f, block.box.width());
+        int typicalLineLength = medianLineLength(sourceLines);
 
-        for (String rawLine : rawLines) {
+        for (String rawLine : sourceLines) {
+            int leadingWhitespace = leadingWhitespaceCount(rawLine);
             String line = normalizeInlineWhitespace(rawLine);
             if (line.isEmpty()) {
                 paragraphBreakPending = output.length() > 0;
@@ -342,10 +345,17 @@ final class ReflowPostProcessor {
                     blockWidth,
                     typicalHeight,
                     typicalGap);
+            boolean textParagraph = shouldStartParagraphFromText(
+                    previousLine,
+                    line,
+                    previousLineLength,
+                    leadingWhitespace,
+                    typicalLineLength);
             boolean paragraphBreak = paragraphBreakPending
                     || listLine
                     || previousWasList
-                    || geometryParagraph;
+                    || geometryParagraph
+                    || textParagraph;
 
             if (output.length() == 0) {
                 output.append(line);
@@ -362,10 +372,101 @@ final class ReflowPostProcessor {
             paragraphBreakPending = false;
             previousWasList = listLine;
             previousLine = line;
+            previousLineLength = line.length();
             previousRect = currentRect;
         }
 
         return output.toString().trim();
+    }
+
+    @NonNull
+    private static List<String> buildSourceLines(@NonNull Block block) {
+        String normalized = normalizeNewlines(block.rawText);
+        List<String> lines = new ArrayList<>();
+
+        if (normalized.indexOf('\n') >= 0 || block.lineBounds.size() <= 1) {
+            String[] split = normalized.split("\\n", -1);
+            Collections.addAll(lines, split);
+            return lines;
+        }
+
+        return approximateLinesFromBounds(normalized, block.lineBounds);
+    }
+
+    @NonNull
+    private static List<String> approximateLinesFromBounds(
+            @NonNull String text,
+            @NonNull List<RectF> bounds) {
+        String compact = normalizeInlineWhitespace(text);
+        List<String> lines = new ArrayList<>();
+        if (compact.isEmpty() || bounds.size() <= 1) {
+            lines.add(compact);
+            return lines;
+        }
+
+        int cursor = 0;
+        for (int i = 0; i < bounds.size() - 1 && cursor < compact.length(); i++) {
+            float remainingWidth = 0f;
+            for (int j = i; j < bounds.size(); j++) {
+                RectF rect = bounds.get(j);
+                remainingWidth += rect == null ? 1f : Math.max(1f, rect.width());
+            }
+
+            RectF current = bounds.get(i);
+            float currentWidth = current == null ? 1f : Math.max(1f, current.width());
+            int remainingCharacters = compact.length() - cursor;
+            int targetCharacters = Math.max(
+                    1,
+                    Math.round(remainingCharacters * (currentWidth / remainingWidth)));
+            int ideal = Math.min(compact.length() - 1, cursor + targetCharacters);
+            int breakAt = nearestWhitespace(compact, cursor, ideal);
+
+            if (breakAt <= cursor || breakAt >= compact.length()) {
+                break;
+            }
+
+            lines.add(compact.substring(cursor, breakAt).trim());
+            cursor = breakAt;
+            while (cursor < compact.length() && Character.isWhitespace(compact.charAt(cursor))) {
+                cursor++;
+            }
+        }
+
+        if (cursor < compact.length()) {
+            lines.add(compact.substring(cursor).trim());
+        }
+
+        if (lines.isEmpty()) {
+            lines.add(compact);
+        }
+        return lines;
+    }
+
+    private static int nearestWhitespace(
+            @NonNull String text,
+            int start,
+            int ideal) {
+        int remaining = text.length() - start;
+        int searchRadius = Math.max(8, Math.min(40, remaining / 5));
+
+        for (int distance = 0; distance <= searchRadius; distance++) {
+            int left = ideal - distance;
+            if (left > start && left < text.length() && Character.isWhitespace(text.charAt(left))) {
+                return left;
+            }
+
+            int right = ideal + distance;
+            if (right > start && right < text.length() && Character.isWhitespace(text.charAt(right))) {
+                return right;
+            }
+        }
+
+        for (int i = ideal; i < text.length(); i++) {
+            if (Character.isWhitespace(text.charAt(i))) {
+                return i;
+            }
+        }
+        return text.length();
     }
 
     private static boolean shouldStartParagraphFromGeometry(
@@ -389,25 +490,80 @@ final class ReflowPostProcessor {
         }
 
         float verticalGap = currentRect.top - previousRect.bottom;
-        float largeGapThreshold = Math.max(
-                lineHeight * 0.60f,
-                typicalGap > 0f ? typicalGap * 1.85f + 1f : lineHeight * 0.60f);
+        float largeGapThreshold = typicalGap > 0f
+                ? Math.max(lineHeight * 0.35f, typicalGap * 1.45f + 0.5f)
+                : lineHeight * 0.45f;
         if (verticalGap > largeGapThreshold) {
             return true;
         }
 
-        float indentThreshold = Math.max(8f, lineHeight * 0.70f);
+        float indentThreshold = Math.max(6f, lineHeight * 0.50f);
         boolean currentIndented = currentRect.left - leftEdge > indentThreshold;
         boolean previousAtBodyEdge = previousRect.left - leftEdge <= indentThreshold * 0.60f;
         if (currentIndented && previousAtBodyEdge) {
             return true;
         }
 
-        boolean previousLineShort = previousRect.width() < blockWidth * 0.72f;
+        boolean previousLineShort = previousRect.width() < blockWidth * 0.88f;
         boolean currentAtBodyEdge = currentRect.left - leftEdge <= indentThreshold;
         return previousLineShort
                 && currentAtBodyEdge
-                && endsParagraphPunctuation(previousLine);
+                && endsParagraphPunctuation(previousLine)
+                && looksLikeParagraphStart(currentLine);
+    }
+
+    private static boolean shouldStartParagraphFromText(
+            @Nullable String previousLine,
+            @NonNull String currentLine,
+            int previousLineLength,
+            int currentLeadingWhitespace,
+            int typicalLineLength) {
+        if (previousLine == null || previousLine.isEmpty()) {
+            return false;
+        }
+
+        if (currentLeadingWhitespace >= 2 && looksLikeParagraphStart(currentLine)) {
+            return true;
+        }
+
+        if (!endsParagraphPunctuation(previousLine) || !looksLikeParagraphStart(currentLine)) {
+            return false;
+        }
+
+        if (typicalLineLength <= 0) {
+            return previousLineLength <= 80;
+        }
+
+        return previousLineLength <= Math.max(24, Math.round(typicalLineLength * 0.90f));
+    }
+
+    private static boolean looksLikeParagraphStart(@NonNull String line) {
+        if (line.isEmpty()) {
+            return false;
+        }
+
+        int index = 0;
+        while (index < line.length()) {
+            int codePoint = line.codePointAt(index);
+            if (Character.isLetterOrDigit(codePoint)) {
+                return Character.isUpperCase(codePoint)
+                        || Character.isTitleCase(codePoint)
+                        || Character.isDigit(codePoint);
+            }
+
+            if (codePoint == '“'
+                    || codePoint == '"'
+                    || codePoint == '«'
+                    || codePoint == '‘'
+                    || codePoint == '\''
+                    || codePoint == '('
+                    || codePoint == '[') {
+                index += Character.charCount(codePoint);
+                continue;
+            }
+            return false;
+        }
+        return false;
     }
 
     private static boolean endsParagraphPunctuation(@NonNull String line) {
@@ -473,7 +629,39 @@ final class ReflowPostProcessor {
         if (text == null) {
             return "";
         }
-        return text.replace("\r\n", "\n").replace('\r', '\n');
+        return text.replace("\r\n", "\n")
+                .replace('\r', '\n')
+                .replace('\u2028', '\n')
+                .replace("\u2029", "\n\n")
+                .replace('\u0085', '\n')
+                .replace('\f', '\n');
+    }
+
+    private static int leadingWhitespaceCount(@NonNull String line) {
+        int count = 0;
+        while (count < line.length()) {
+            char value = line.charAt(count);
+            if (value != ' ' && value != '\t') {
+                break;
+            }
+            count++;
+        }
+        return count;
+    }
+
+    private static int medianLineLength(@NonNull List<String> lines) {
+        List<Integer> lengths = new ArrayList<>();
+        for (String line : lines) {
+            String normalized = normalizeInlineWhitespace(line);
+            if (normalized.length() >= 8) {
+                lengths.add(normalized.length());
+            }
+        }
+        if (lengths.isEmpty()) {
+            return 0;
+        }
+        Collections.sort(lengths);
+        return lengths.get(lengths.size() / 2);
     }
 
     private static int wordCount(@NonNull String text) {

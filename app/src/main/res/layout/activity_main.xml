@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.ippazio.privacylowvisionpdf.FirstRunFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -36,63 +36,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="@string/home_title"
+                android:gravity="center"
+                android:text="@string/product_name"
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:lineSpacingExtra="4sp"
-                android:text="@string/home_intro"
-                android:textSize="19sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:lineSpacingExtra="4sp"
-                android:text="@string/home_instructions"
-                android:textSize="19sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="@string/important"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:lineSpacingExtra="4sp"
-                android:text="@string/home_warning"
-                android:textSize="18sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="@string/privacy"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:lineSpacingExtra="4sp"
-                android:text="@string/home_privacy"
-                android:textSize="18sp" />
+                android:gravity="center"
+                android:text="@string/home_hint"
+                android:textSize="20sp" />
         </LinearLayout>
     </ScrollView>
 
@@ -170,27 +131,10 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/document_menu_actions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <CheckBox
-                    android:id="@+id/reflow_checkbox"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/text_reflow"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/document_menu_controls"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:visibility="gone">
@@ -220,6 +164,23 @@
                     android:contentDescription="@string/zoom_in"
                     android:text="+"
                     android:textSize="26sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/document_menu_actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <CheckBox
+                    android:id="@+id/reflow_checkbox"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/text_reflow"
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <TextView
@@ -271,15 +232,29 @@
                     android:textSize="18sp" />
             </RadioGroup>
 
-            <Button
-                android:id="@+id/language_button"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_gravity="end"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:minHeight="48dp"
-                android:text="@string/language"
-                android:textSize="16sp" />
+                android:gravity="end|center_vertical"
+                android:orientation="horizontal">
+
+                <org.ippazio.privacylowvisionpdf.HelpButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:minHeight="48dp"
+                    android:text="@string/help"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/language_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:minHeight="48dp"
+                    android:text="@string/language"
+                    android:textSize="16sp" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
@@ -297,4 +272,4 @@
         android:text="☰"
         android:textSize="30sp" />
 
-</FrameLayout>
+</org.ippazio.privacylowvisionpdf.FirstRunFrameLayout>
