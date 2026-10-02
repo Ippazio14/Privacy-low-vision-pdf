@@ -18,7 +18,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -75,18 +74,16 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
     private View emptyState;
     private View menuPanel;
     private View menuScrim;
-    private View documentOpenRow;
     private View documentMenuControls;
     private View documentMenuActions;
-    private View reflowMenuControls;
     private View searchButton;
     private View pdfContainer;
     private View themeTitle;
-    private ListView reflowList;
-    private TextView reflowFontValue;
-    private TextView zoomValue;
+    private ReflowListView reflowList;
     private RadioGroup themeGroup;
     private Button languageButton;
+    private Button zoomOutButton;
+    private Button zoomInButton;
     private CheckBox reflowCheckBox;
 
     private final SparseArray<String> reflowPageText = new SparseArray<>();
@@ -116,27 +113,21 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
         emptyState = findViewById(R.id.empty_state);
         menuPanel = findViewById(R.id.menu_panel);
         menuScrim = findViewById(R.id.menu_scrim);
-        documentOpenRow = findViewById(R.id.document_open_row);
         documentMenuControls = findViewById(R.id.document_menu_controls);
         documentMenuActions = findViewById(R.id.document_menu_actions);
-        reflowMenuControls = findViewById(R.id.reflow_menu_controls);
         searchButton = findViewById(R.id.search_button);
         pdfContainer = findViewById(R.id.pdf_container);
         themeTitle = findViewById(R.id.theme_title);
         reflowList = findViewById(R.id.reflow_list);
-        reflowFontValue = findViewById(R.id.reflow_font_value);
-        zoomValue = findViewById(R.id.zoom_value);
         themeGroup = findViewById(R.id.theme_group);
         languageButton = findViewById(R.id.language_button);
         reflowCheckBox = findViewById(R.id.reflow_checkbox);
+        zoomOutButton = findViewById(R.id.zoom_out_button);
+        zoomInButton = findViewById(R.id.zoom_in_button);
 
         Button menuButton = findViewById(R.id.menu_button);
         Button openButton = findViewById(R.id.open_document_button);
-        Button zoomOutButton = findViewById(R.id.zoom_out_button);
-        Button zoomInButton = findViewById(R.id.zoom_in_button);
-        Button reflowFontSmallerButton = findViewById(R.id.reflow_font_smaller_button);
-        Button reflowFontLargerButton = findViewById(R.id.reflow_font_larger_button);
-        Button closeProgramButton = findViewById(R.id.close_program_button);
+        Button exitButton = findViewById(R.id.exit_program_button);
 
         pdfViewerFragment = (ReaderPdfFragment) getSupportFragmentManager()
                 .findFragmentByTag(PDF_FRAGMENT_TAG);
@@ -150,10 +141,11 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
         reflowAdapter = new ReflowPageAdapter();
         reflowList.setAdapter(reflowAdapter);
         reflowList.setItemsCanFocus(true);
+        reflowList.setOnScaleStepListener(direction ->
+                changeReflowFontSize(direction * REFLOW_TEXT_SIZE_STEP));
         reflowList.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                // No special action is needed. Page extraction follows the visible window.
             }
 
             @Override
@@ -173,10 +165,9 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
 
         reflowFontSp = getSharedPreferences(UI_PREFS, MODE_PRIVATE)
                 .getInt(PREF_REFLOW_TEXT_SIZE, REFLOW_TEXT_SIZE_DEFAULT);
-        reflowFontSp = Math.max(REFLOW_TEXT_SIZE_MIN, Math.min(REFLOW_TEXT_SIZE_MAX, reflowFontSp));
-        applyReflowFontSize();
-        reflowFontSmallerButton.setContentDescription(getString(R.string.font_size) + " −");
-        reflowFontLargerButton.setContentDescription(getString(R.string.font_size) + " +");
+        reflowFontSp = Math.max(
+                REFLOW_TEXT_SIZE_MIN,
+                Math.min(REFLOW_TEXT_SIZE_MAX, reflowFontSp));
 
         menuButton.setOnClickListener(v -> toggleMenu());
         menuScrim.setOnClickListener(v -> closeMenu());
@@ -185,6 +176,8 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
             closeMenu();
             openPdfLauncher.launch(new String[]{"application/pdf"});
         });
+
+        exitButton.setOnClickListener(v -> showCloseConfirmation());
 
         searchButton.setOnClickListener(v -> {
             if (!hasOpenDocument() || reflowMode) {
@@ -199,9 +192,6 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
                 return;
             }
 
-            // Wait until the menu has been removed from the current layout pass before showing
-            // AndroidX's search bar. On first use, activating it in the same frame as closing the
-            // menu can leave the search view temporarily laid out around mid-screen.
             pdfContainer.postOnAnimation(() ->
                     pdfContainer.postOnAnimation(() -> {
                         if (hasOpenDocument() && !reflowMode
@@ -211,17 +201,8 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
                     }));
         });
 
-        zoomOutButton.setOnClickListener(v -> {
-            if (hasOpenDocument() && !reflowMode) {
-                pdfViewerFragment.zoomOut();
-            }
-        });
-
-        zoomInButton.setOnClickListener(v -> {
-            if (hasOpenDocument() && !reflowMode) {
-                pdfViewerFragment.zoomIn();
-            }
-        });
+        zoomOutButton.setOnClickListener(v -> changeUnifiedZoom(-1));
+        zoomInButton.setOnClickListener(v -> changeUnifiedZoom(1));
 
         reflowCheckBox.setOnClickListener(v -> {
             if (reflowCheckBox.isChecked()) {
@@ -233,10 +214,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
                 exitReflowMode();
             }
         });
-        reflowFontSmallerButton.setOnClickListener(v -> changeReflowFontSize(-REFLOW_TEXT_SIZE_STEP));
-        reflowFontLargerButton.setOnClickListener(v -> changeReflowFontSize(REFLOW_TEXT_SIZE_STEP));
 
-        closeProgramButton.setOnClickListener(v -> closeProgram());
         languageButton.setOnClickListener(v -> showLanguageChooser());
 
         selectSavedThemeRadio();
@@ -363,11 +341,9 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
         pdfContainer.setVisibility(reflowMode ? View.GONE : View.VISIBLE);
         reflowList.setVisibility(reflowMode ? View.VISIBLE : View.GONE);
 
-        documentOpenRow.setVisibility(View.VISIBLE);
         searchButton.setVisibility(open && !reflowMode ? View.VISIBLE : View.GONE);
-        documentMenuControls.setVisibility(open && !reflowMode ? View.VISIBLE : View.GONE);
         documentMenuActions.setVisibility(open ? View.VISIBLE : View.GONE);
-        reflowMenuControls.setVisibility(open && reflowMode ? View.VISIBLE : View.GONE);
+        documentMenuControls.setVisibility(open ? View.VISIBLE : View.GONE);
 
         themeTitle.setVisibility(View.VISIBLE);
         themeGroup.setVisibility(View.VISIBLE);
@@ -375,6 +351,30 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
 
         reflowCheckBox.setEnabled(open);
         reflowCheckBox.setChecked(reflowMode);
+
+        if (reflowMode) {
+            zoomOutButton.setContentDescription(getString(R.string.font_size) + " −");
+            zoomInButton.setContentDescription(getString(R.string.font_size) + " +");
+        } else {
+            zoomOutButton.setContentDescription(getString(R.string.zoom_out));
+            zoomInButton.setContentDescription(getString(R.string.zoom_in));
+        }
+    }
+
+    private void changeUnifiedZoom(int direction) {
+        if (!hasOpenDocument()) {
+            return;
+        }
+
+        if (reflowMode) {
+            changeReflowFontSize(direction * REFLOW_TEXT_SIZE_STEP);
+        } else if (pdfViewerFragment != null) {
+            if (direction < 0) {
+                pdfViewerFragment.zoomOut();
+            } else {
+                pdfViewerFragment.zoomIn();
+            }
+        }
     }
 
     private void ensurePdfViewer() {
@@ -493,7 +493,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
                 pageNumber,
                 new ReaderPdfFragment.ReflowTextCallback() {
                     @Override
-                    public void onTextReady(@androidx.annotation.NonNull String text) {
+                    public void onTextReady(@NonNull String text) {
                         runOnUiThread(() -> {
                             if (!reflowMode
                                     || requestId != reflowRequestId
@@ -503,12 +503,13 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
                             }
                             reflowPageLoading.delete(pageNumber);
                             reflowPageText.put(pageNumber, text);
+                            stripRepeatedEdgeTextAround(pageNumber);
                             reflowAdapter.notifyDataSetChanged();
                         });
                     }
 
                     @Override
-                    public void onError(@androidx.annotation.NonNull Throwable error) {
+                    public void onError(@NonNull Throwable error) {
                         runOnUiThread(() -> {
                             if (!reflowMode
                                     || requestId != reflowRequestId
@@ -522,6 +523,94 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
                         });
                     }
                 });
+    }
+
+    private void stripRepeatedEdgeTextAround(int pageNumber) {
+        int from = Math.max(0, pageNumber - REFLOW_PREFETCH_PAGES);
+        int to = Math.min(reflowPageCount - 1, pageNumber + REFLOW_PREFETCH_PAGES);
+
+        for (int first = from; first <= to; first++) {
+            String firstText = reflowPageText.get(first);
+            if (firstText == null || firstText.isEmpty()) {
+                continue;
+            }
+
+            for (int second = first + 1; second <= to; second++) {
+                if (second - first > REFLOW_PREFETCH_PAGES) {
+                    break;
+                }
+                String secondText = reflowPageText.get(second);
+                if (secondText == null || secondText.isEmpty()) {
+                    continue;
+                }
+
+                String firstHeader = firstParagraph(firstText);
+                String secondHeader = firstParagraph(secondText);
+                if (hasMultipleParagraphs(firstText)
+                        && hasMultipleParagraphs(secondText)
+                        && isRepeatedRunningText(firstHeader, secondHeader)) {
+                    reflowPageText.put(first, removeFirstParagraph(firstText));
+                    reflowPageText.put(second, removeFirstParagraph(secondText));
+                    firstText = reflowPageText.get(first);
+                    secondText = reflowPageText.get(second);
+                }
+
+                String firstFooter = lastParagraph(firstText);
+                String secondFooter = lastParagraph(secondText);
+                if (hasMultipleParagraphs(firstText)
+                        && hasMultipleParagraphs(secondText)
+                        && isRepeatedRunningText(firstFooter, secondFooter)) {
+                    reflowPageText.put(first, removeLastParagraph(firstText));
+                    reflowPageText.put(second, removeLastParagraph(secondText));
+                    firstText = reflowPageText.get(first);
+                }
+            }
+        }
+    }
+
+    private boolean hasMultipleParagraphs(String text) {
+        return text.contains("\n\n");
+    }
+
+    private boolean isRepeatedRunningText(String first, String second) {
+        if (first.isEmpty() || second.isEmpty()) {
+            return false;
+        }
+
+        String normalizedFirst = normalizeRunningText(first);
+        String normalizedSecond = normalizeRunningText(second);
+        if (!normalizedFirst.equals(normalizedSecond)) {
+            return false;
+        }
+
+        int words = normalizedFirst.split("\\s+").length;
+        return normalizedFirst.length() <= 90 && words <= 12;
+    }
+
+    private String normalizeRunningText(String text) {
+        return text.replaceAll("\\s+", " ")
+                .trim()
+                .toLowerCase(Locale.ROOT);
+    }
+
+    private String firstParagraph(String text) {
+        int separator = text.indexOf("\n\n");
+        return (separator < 0 ? text : text.substring(0, separator)).trim();
+    }
+
+    private String lastParagraph(String text) {
+        int separator = text.lastIndexOf("\n\n");
+        return (separator < 0 ? text : text.substring(separator + 2)).trim();
+    }
+
+    private String removeFirstParagraph(String text) {
+        int separator = text.indexOf("\n\n");
+        return separator < 0 ? "" : text.substring(separator + 2).trim();
+    }
+
+    private String removeLastParagraph(String text) {
+        int separator = text.lastIndexOf("\n\n");
+        return separator < 0 ? "" : text.substring(0, separator).trim();
     }
 
     private void exitReflowMode() {
@@ -552,7 +641,7 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
 
         int firstVisible = -1;
         int topOffset = 0;
-        if (reflowMode && reflowList != null) {
+        if (reflowMode) {
             firstVisible = reflowList.getFirstVisiblePosition();
             View firstChild = reflowList.getChildAt(0);
             if (firstChild != null) {
@@ -565,22 +654,13 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
                 .edit()
                 .putInt(PREF_REFLOW_TEXT_SIZE, reflowFontSp)
                 .apply();
-        applyReflowFontSize();
+        reflowAdapter.notifyDataSetChanged();
 
         if (reflowMode && firstVisible >= 0) {
             final int restorePosition = firstVisible;
             final int restoreOffset = topOffset;
             reflowList.post(() ->
                     reflowList.setSelectionFromTop(restorePosition, restoreOffset));
-        }
-    }
-
-    private void applyReflowFontSize() {
-        if (reflowFontValue != null) {
-            reflowFontValue.setText(reflowFontSp + " sp");
-        }
-        if (reflowAdapter != null) {
-            reflowAdapter.notifyDataSetChanged();
         }
     }
 
@@ -625,6 +705,14 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
                 .setTitle(R.string.cannot_open_document)
                 .setMessage(messageRes)
                 .setPositiveButton(android.R.string.ok, null)
+                .show();
+    }
+
+    private void showCloseConfirmation() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.close_program) + "?")
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.close_program, (dialog, which) -> closeProgram())
                 .show();
     }
 
@@ -740,7 +828,6 @@ public class MainActivity extends AppCompatActivity implements ReaderPdfFragment
 
     @Override
     public void onPdfZoomChanged(int percent) {
-        zoomValue.setText(getString(R.string.zoom_percent, percent));
     }
 
     @Override

@@ -49,7 +49,7 @@ final class ReflowPostProcessor {
                 continue;
             }
 
-            String text = normalizeContinuousText(block.rawText);
+            String text = normalizeContinuousText(block);
             if (text.isEmpty()) {
                 continue;
             }
@@ -76,13 +76,18 @@ final class ReflowPostProcessor {
                 continue;
             }
 
-            List<RectF> bounds = textContent.getBounds();
-            RectF union = unionBounds(bounds);
-            Block block = new Block(index, rawText, union, bounds != null && !bounds.isEmpty());
+            List<RectF> sourceBounds = textContent.getBounds();
+            List<RectF> lineBounds = sourceBounds == null
+                    ? Collections.emptyList()
+                    : new ArrayList<>(sourceBounds);
+            RectF union = unionBounds(lineBounds);
+            Block block = new Block(
+                    index,
+                    rawText,
+                    union,
+                    !lineBounds.isEmpty(),
+                    lineBounds);
 
-            // Some PDF producers flatten a whole table row or table into one text object. In that
-            // case geometry between separate objects cannot reveal the grid, but repeated wide
-            // spacing on several short lines is still a strong signal of structured content.
             if (looksLikeTextualGrid(rawText)) {
                 block.omit = true;
             }
@@ -91,9 +96,7 @@ final class ReflowPostProcessor {
             index++;
         }
 
-        // AndroidX describes PdfPageTextContent as text in viewing order. Preserve that order.
-        // Bounds are used only to identify obviously structured regions, not to invent a new order.
-        Collections.sort(blocks, Comparator.comparingInt(block -> block.originalIndex));
+        blocks.sort(Comparator.comparingInt(block -> block.originalIndex));
         return blocks;
     }
 
@@ -115,8 +118,6 @@ final class ReflowPostProcessor {
                 continue;
             }
 
-            // A narrow short block can be a table cell. Long narrow blocks are much more likely
-            // to be ordinary newspaper or magazine columns and are deliberately not candidates.
             if (block.box.width() <= geometry.width * 0.62f) {
                 candidates.add(block);
             }
@@ -177,13 +178,11 @@ final class ReflowPostProcessor {
                 }
             }
 
-            // Requiring two other matching rows means at least three rows share the same grid.
             if (similarRows >= 2) {
                 mark[i] = true;
             }
         }
 
-        // Expand from each confident row to the other rows that share its column anchors.
         for (int i = 0; i < gridRows.size(); i++) {
             if (!mark[i]) {
                 continue;
@@ -238,15 +237,12 @@ final class ReflowPostProcessor {
                 try {
                     int printed = Integer.parseInt(text);
                     int physical = pageNumber + 1;
-                    // Covers ordinary pagination while tolerating a small front-matter offset.
                     if (Math.abs(printed - physical) <= 5) {
                         block.omit = true;
                     }
                 } catch (NumberFormatException ignored) {
                 }
             } else if (ROMAN_PAGE_NUMBER.matcher(text).matches()) {
-                // Roman numerals are common in front matter. Only remove them in the extreme
-                // bottom band and when they are isolated and narrow.
                 block.omit = true;
             }
         }
@@ -308,15 +304,20 @@ final class ReflowPostProcessor {
     }
 
     @NonNull
-    private static String normalizeContinuousText(@Nullable String rawText) {
-        if (rawText == null) {
-            return "";
-        }
-
-        String[] rawLines = normalizeNewlines(rawText).split("\\n", -1);
+    private static String normalizeContinuousText(@NonNull Block block) {
+        String[] rawLines = normalizeNewlines(block.rawText).split("\\n", -1);
         StringBuilder output = new StringBuilder();
+
         boolean paragraphBreakPending = false;
         boolean previousWasList = false;
+        String previousLine = null;
+        RectF previousRect = null;
+        int boundsIndex = 0;
+
+        float typicalHeight = medianRectHeight(block.lineBounds);
+        float typicalGap = medianLineGap(block.lineBounds, typicalHeight);
+        float leftEdge = block.box.left;
+        float blockWidth = Math.max(1f, block.box.width());
 
         for (String rawLine : rawLines) {
             String line = normalizeInlineWhitespace(rawLine);
@@ -326,15 +327,33 @@ final class ReflowPostProcessor {
                 continue;
             }
 
+            RectF currentRect = boundsIndex < block.lineBounds.size()
+                    ? block.lineBounds.get(boundsIndex)
+                    : null;
+            boundsIndex++;
+
             boolean listLine = LIST_PREFIX.matcher(line).matches();
+            boolean geometryParagraph = shouldStartParagraphFromGeometry(
+                    previousLine,
+                    line,
+                    previousRect,
+                    currentRect,
+                    leftEdge,
+                    blockWidth,
+                    typicalHeight,
+                    typicalGap);
+            boolean paragraphBreak = paragraphBreakPending
+                    || listLine
+                    || previousWasList
+                    || geometryParagraph;
 
             if (output.length() == 0) {
                 output.append(line);
+            } else if (paragraphBreak) {
+                appendParagraphBreak(output);
+                output.append(line);
             } else if (shouldJoinHyphenated(output, line)) {
                 output.deleteCharAt(output.length() - 1);
-                output.append(line);
-            } else if (paragraphBreakPending || listLine || previousWasList) {
-                appendParagraphBreak(output);
                 output.append(line);
             } else {
                 output.append(' ').append(line);
@@ -342,9 +361,73 @@ final class ReflowPostProcessor {
 
             paragraphBreakPending = false;
             previousWasList = listLine;
+            previousLine = line;
+            previousRect = currentRect;
         }
 
         return output.toString().trim();
+    }
+
+    private static boolean shouldStartParagraphFromGeometry(
+            @Nullable String previousLine,
+            @NonNull String currentLine,
+            @Nullable RectF previousRect,
+            @Nullable RectF currentRect,
+            float leftEdge,
+            float blockWidth,
+            float typicalHeight,
+            float typicalGap) {
+        if (previousLine == null || previousRect == null || currentRect == null) {
+            return false;
+        }
+
+        float lineHeight = typicalHeight > 0f
+                ? typicalHeight
+                : Math.max(previousRect.height(), currentRect.height());
+        if (lineHeight <= 0f) {
+            lineHeight = 10f;
+        }
+
+        float verticalGap = currentRect.top - previousRect.bottom;
+        float largeGapThreshold = Math.max(
+                lineHeight * 0.60f,
+                typicalGap > 0f ? typicalGap * 1.85f + 1f : lineHeight * 0.60f);
+        if (verticalGap > largeGapThreshold) {
+            return true;
+        }
+
+        float indentThreshold = Math.max(8f, lineHeight * 0.70f);
+        boolean currentIndented = currentRect.left - leftEdge > indentThreshold;
+        boolean previousAtBodyEdge = previousRect.left - leftEdge <= indentThreshold * 0.60f;
+        if (currentIndented && previousAtBodyEdge) {
+            return true;
+        }
+
+        boolean previousLineShort = previousRect.width() < blockWidth * 0.72f;
+        boolean currentAtBodyEdge = currentRect.left - leftEdge <= indentThreshold;
+        return previousLineShort
+                && currentAtBodyEdge
+                && endsParagraphPunctuation(previousLine);
+    }
+
+    private static boolean endsParagraphPunctuation(@NonNull String line) {
+        String trimmed = line.trim();
+        if (trimmed.isEmpty()) {
+            return false;
+        }
+
+        char last = trimmed.charAt(trimmed.length() - 1);
+        return last == '.'
+                || last == '!'
+                || last == '?'
+                || last == ':'
+                || last == ';'
+                || last == '。'
+                || last == '！'
+                || last == '？'
+                || last == '…'
+                || last == '”'
+                || last == '»';
     }
 
     private static boolean shouldJoinHyphenated(
@@ -415,6 +498,48 @@ final class ReflowPostProcessor {
         return heights.get(heights.size() / 2);
     }
 
+    private static float medianRectHeight(@NonNull List<RectF> bounds) {
+        List<Float> heights = new ArrayList<>();
+        for (RectF rect : bounds) {
+            if (rect != null && rect.height() > 0f) {
+                heights.add(rect.height());
+            }
+        }
+        if (heights.isEmpty()) {
+            return 0f;
+        }
+        Collections.sort(heights);
+        return heights.get(heights.size() / 2);
+    }
+
+    private static float medianLineGap(
+            @NonNull List<RectF> bounds,
+            float typicalHeight) {
+        if (bounds.size() < 2) {
+            return 0f;
+        }
+
+        List<Float> gaps = new ArrayList<>();
+        float maximumUsefulGap = typicalHeight > 0f ? typicalHeight * 1.5f : 30f;
+        for (int i = 1; i < bounds.size(); i++) {
+            RectF previous = bounds.get(i - 1);
+            RectF current = bounds.get(i);
+            if (previous == null || current == null) {
+                continue;
+            }
+            float gap = current.top - previous.bottom;
+            if (gap >= 0f && gap <= maximumUsefulGap) {
+                gaps.add(gap);
+            }
+        }
+
+        if (gaps.isEmpty()) {
+            return 0f;
+        }
+        Collections.sort(gaps);
+        return gaps.get(gaps.size() / 2);
+    }
+
     @NonNull
     private static RectF unionBounds(@Nullable List<RectF> bounds) {
         RectF union = new RectF();
@@ -442,13 +567,20 @@ final class ReflowPostProcessor {
         final String rawText;
         final RectF box;
         final boolean hasBounds;
+        final List<RectF> lineBounds;
         boolean omit;
 
-        Block(int originalIndex, String rawText, RectF box, boolean hasBounds) {
+        Block(
+                int originalIndex,
+                String rawText,
+                RectF box,
+                boolean hasBounds,
+                List<RectF> lineBounds) {
             this.originalIndex = originalIndex;
             this.rawText = rawText;
             this.box = box;
             this.hasBounds = hasBounds;
+            this.lineBounds = lineBounds;
         }
     }
 

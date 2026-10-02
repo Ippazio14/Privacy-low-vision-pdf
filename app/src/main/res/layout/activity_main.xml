@@ -134,20 +134,32 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/open_document_button"
                     android:layout_width="0dp"
-                    android:layout_height="56dp"
+                    android:layout_height="64dp"
                     android:layout_weight="1"
                     android:text="@string/open_document"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     app:icon="@drawable/ic_open_document"
                     app:iconGravity="textStart"
-                    app:iconPadding="10dp"
-                    app:iconSize="24dp" />
+                    app:iconPadding="8dp"
+                    app:iconSize="34dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/exit_program_button"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="6dp"
+                    android:contentDescription="@string/close_program"
+                    android:text=""
+                    app:icon="@drawable/ic_exit_program"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconSize="30dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/search_button"
-                    android:layout_width="64dp"
+                    android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="6dp"
                     android:contentDescription="@string/search_text"
                     android:text=""
                     android:visibility="gone"
@@ -158,59 +170,63 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/document_menu_controls"
+                android:id="@+id/document_menu_actions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <TextView
+                <CheckBox
+                    android:id="@+id/reflow_checkbox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/text_reflow"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/document_menu_controls"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:text="@string/zoom"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                <Button
+                    android:id="@+id/zoom_out_button"
+                    android:layout_width="64dp"
+                    android:layout_height="56dp"
+                    android:contentDescription="@string/zoom_out"
+                    android:text="−"
+                    android:textSize="26sp" />
 
-                    <Button
-                        android:id="@+id/zoom_out_button"
-                        android:layout_width="64dp"
-                        android:layout_height="56dp"
-                        android:contentDescription="@string/zoom_out"
-                        android:text="−"
-                        android:textSize="24sp" />
-
-                    <TextView
-                        android:id="@+id/zoom_value"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="@string/zoom_default"
-                        android:textSize="20sp" />
-
-                    <Button
-                        android:id="@+id/zoom_in_button"
-                        android:layout_width="64dp"
-                        android:layout_height="56dp"
-                        android:contentDescription="@string/zoom_in"
-                        android:text="+"
-                        android:textSize="24sp" />
-                </LinearLayout>
+                <Button
+                    android:id="@+id/zoom_in_button"
+                    android:layout_width="64dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="@string/zoom_in"
+                    android:text="+"
+                    android:textSize="26sp" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/theme_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="26dp"
+                android:layout_marginTop="22dp"
                 android:text="@string/theme"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -255,85 +271,12 @@
                     android:textSize="18sp" />
             </RadioGroup>
 
-            <LinearLayout
-                android:id="@+id/document_menu_actions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <CheckBox
-                    android:id="@+id/reflow_checkbox"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_marginTop="18dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/text_reflow"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/reflow_menu_controls"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/font_size"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/reflow_font_smaller_button"
-                        android:layout_width="64dp"
-                        android:layout_height="56dp"
-                        android:text="−"
-                        android:textSize="24sp" />
-
-                    <TextView
-                        android:id="@+id/reflow_font_value"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="26 sp"
-                        android:textSize="20sp" />
-
-                    <Button
-                        android:id="@+id/reflow_font_larger_button"
-                        android:layout_width="64dp"
-                        android:layout_height="56dp"
-                        android:text="+"
-                        android:textSize="24sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/close_program_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:minHeight="56dp"
-                android:text="@string/close_program"
-                android:textSize="18sp" />
-
             <Button
                 android:id="@+id/language_button"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_gravity="end"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="20dp"
                 android:minHeight="48dp"
                 android:text="@string/language"
                 android:textSize="16sp" />
