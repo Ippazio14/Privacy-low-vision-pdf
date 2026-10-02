@@ -19,6 +19,10 @@
     <string name="theme_high_contrast">Alto contraste</string>
 
     <string name="enable_reflow">Activar Text Reflow</string>
+    <string name="font_size">Tamaño del texto</string>
+    <string name="exit_reflow">Salir de Text Reflow</string>
+    <string name="reflow_loading">Preparando Text Reflow…</string>
+    <string name="reflow_no_text">No se encontró texto legible en este PDF.</string>
     <string name="close_program">Cerrar programa</string>
 
     <string name="language">Idioma</string>
@@ -28,7 +32,7 @@
     <string name="home_intro">Un lector PDF sencillo, pensado especialmente para personas con baja visión, pero utilizable por todos.</string>
     <string name="home_instructions">Para empezar, abre ☰ y elige Abrir documento. En la vista normal puedes desplazarte, ampliar, buscar y seleccionar texto. Text Reflow está pensado para la lectura continua de libros, revistas, artículos científicos y páginas de periódicos.</string>
     <string name="important">Importante</string>
-    <string name="home_warning">Text Reflow no es una copia fiel del diseño original. Puede cambiar el orden de lectura y omitir imágenes, tablas y formato. Las tablas no se muestran. No uses Text Reflow para documentos médicos, financieros, legales, fiscales, formularios u otros documentos donde la estructura o el diseño sean importantes. Usa en su lugar la vista PDF original.</string>
+    <string name="home_warning">Text Reflow no es una copia fiel del diseño original. Puede cambiar el orden de lectura y omitir imágenes o formato. En esta primera versión experimental, las tablas y los diseños complejos todavía pueden aparecer como texto simple o en un orden incorrecto. No uses Text Reflow para documentos médicos, financieros, legales, fiscales, formularios u otros documentos donde la estructura o el diseño sean importantes. Usa en su lugar la vista PDF original.</string>
     <string name="privacy">Privacidad</string>
     <string name="home_privacy">La aplicación solo abre los documentos que eliges. No requiere acceso general a tus archivos ni necesita conexión a Internet.</string>
 

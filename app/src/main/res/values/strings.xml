@@ -19,6 +19,10 @@
     <string name="theme_high_contrast">High contrast</string>
 
     <string name="enable_reflow">Enable Text Reflow</string>
+    <string name="font_size">Text size</string>
+    <string name="exit_reflow">Exit Text Reflow</string>
+    <string name="reflow_loading">Preparing Text Reflow…</string>
+    <string name="reflow_no_text">No readable text was found in this PDF.</string>
     <string name="close_program">Close program</string>
 
     <string name="language">Language</string>
@@ -28,7 +32,7 @@
     <string name="home_intro">A simple PDF reader designed especially for people with low vision, but usable by everyone.</string>
     <string name="home_instructions">To begin, open ☰ and choose Open document. In normal view you can scroll, zoom, search and select text. Text Reflow is intended for continuous reading such as books, magazines, scientific articles and newspaper pages.</string>
     <string name="important">Important</string>
-    <string name="home_warning">Text Reflow is not a faithful copy of the original layout. It may change reading order and omit images, tables and formatting. Tables are not shown. Do not use Text Reflow for medical, financial, legal, tax, form-based or other documents where layout or structure matters. Use the original PDF view instead.</string>
+    <string name="home_warning">Text Reflow is not a faithful copy of the original layout. It may change reading order and omit images or formatting. In this first experimental version, tables and complex layouts may still appear as plain text or in the wrong order. Do not use Text Reflow for medical, financial, legal, tax, form-based or other documents where layout or structure matters. Use the original PDF view instead.</string>
     <string name="privacy">Privacy</string>
     <string name="home_privacy">The app opens only documents you choose. It does not require general access to your files and it does not need an Internet connection.</string>
 

@@ -19,6 +19,10 @@
     <string name="theme_high_contrast">Alto contrasto</string>
 
     <string name="enable_reflow">Abilita Text Reflow</string>
+    <string name="font_size">Dimensione carattere</string>
+    <string name="exit_reflow">Esci da Text Reflow</string>
+    <string name="reflow_loading">Preparazione Text Reflow…</string>
+    <string name="reflow_no_text">In questo PDF non è stato trovato testo leggibile.</string>
     <string name="close_program">Chiudi programma</string>
 
     <string name="language">Lingua</string>
@@ -28,7 +32,7 @@
     <string name="home_intro">Un lettore PDF semplice, pensato soprattutto per persone ipovedenti, ma utilizzabile da tutti.</string>
     <string name="home_instructions">Per iniziare, apri ☰ e scegli Apri documento. Nella visualizzazione normale puoi scorrere, ingrandire, cercare e selezionare il testo. Text Reflow è pensato per la lettura continua di libri, riviste, articoli scientifici e pagine di quotidiano.</string>
     <string name="important">Importante</string>
-    <string name="home_warning">Text Reflow non è una copia fedele dell’impaginazione originale. Può cambiare l’ordine di lettura e omettere immagini, tabelle e formattazione. Le tabelle non vengono mostrate. Non usare Text Reflow per documenti medici, finanziari, legali, fiscali, moduli o altri documenti in cui struttura e impaginazione sono importanti. Usa invece la visualizzazione PDF originale.</string>
+    <string name="home_warning">Text Reflow non è una copia fedele dell’impaginazione originale. Può cambiare l’ordine di lettura e omettere immagini o formattazione. In questa prima versione sperimentale, tabelle e impaginazioni complesse possono ancora comparire come testo semplice o nell’ordine sbagliato. Non usare Text Reflow per documenti medici, finanziari, legali, fiscali, moduli o altri documenti in cui struttura e impaginazione sono importanti. Usa invece la visualizzazione PDF originale.</string>
     <string name="privacy">Privacy</string>
     <string name="home_privacy">L’app apre solo i documenti scelti dall’utente. Non richiede accesso generale ai file e non necessita di connessione Internet.</string>
 

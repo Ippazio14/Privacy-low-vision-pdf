@@ -19,6 +19,10 @@
     <string name="theme_high_contrast">Contraste élevé</string>
 
     <string name="enable_reflow">Activer Text Reflow</string>
+    <string name="font_size">Taille du texte</string>
+    <string name="exit_reflow">Quitter Text Reflow</string>
+    <string name="reflow_loading">Préparation de Text Reflow…</string>
+    <string name="reflow_no_text">Aucun texte lisible n’a été trouvé dans ce PDF.</string>
     <string name="close_program">Fermer le programme</string>
 
     <string name="language">Langue</string>
@@ -28,7 +32,7 @@
     <string name="home_intro">Un lecteur PDF simple, conçu surtout pour les personnes malvoyantes, mais utilisable par tous.</string>
     <string name="home_instructions">Pour commencer, ouvrez ☰ et choisissez Ouvrir un document. Dans l’affichage normal, vous pouvez faire défiler, zoomer, rechercher et sélectionner du texte. Text Reflow est destiné à la lecture continue de livres, magazines, articles scientifiques et pages de journaux.</string>
     <string name="important">Important</string>
-    <string name="home_warning">Text Reflow n’est pas une copie fidèle de la mise en page d’origine. Il peut modifier l’ordre de lecture et omettre des images, tableaux et éléments de mise en forme. Les tableaux ne sont pas affichés. N’utilisez pas Text Reflow pour des documents médicaux, financiers, juridiques, fiscaux, des formulaires ou d’autres documents où la structure ou la mise en page est importante. Utilisez plutôt l’affichage PDF original.</string>
+    <string name="home_warning">Text Reflow n’est pas une copie fidèle de la mise en page d’origine. Il peut modifier l’ordre de lecture et omettre des images ou des éléments de mise en forme. Dans cette première version expérimentale, les tableaux et les mises en page complexes peuvent encore apparaître comme du texte simple ou dans un ordre incorrect. N’utilisez pas Text Reflow pour des documents médicaux, financiers, juridiques, fiscaux, des formulaires ou d’autres documents où la structure ou la mise en page est importante. Utilisez plutôt l’affichage PDF original.</string>
     <string name="privacy">Confidentialité</string>
     <string name="home_privacy">L’application ouvre uniquement les documents que vous choisissez. Elle ne demande pas d’accès général à vos fichiers et n’a pas besoin de connexion Internet.</string>
 

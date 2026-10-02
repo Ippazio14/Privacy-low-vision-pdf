@@ -19,6 +19,10 @@
     <string name="theme_high_contrast">تباين عالٍ</string>
 
     <string name="enable_reflow">تفعيل Text Reflow</string>
+    <string name="font_size">حجم النص</string>
+    <string name="exit_reflow">الخروج من Text Reflow</string>
+    <string name="reflow_loading">جارٍ إعداد Text Reflow…</string>
+    <string name="reflow_no_text">لم يتم العثور على نص قابل للقراءة في ملف PDF هذا.</string>
     <string name="close_program">إغلاق البرنامج</string>
 
     <string name="language">اللغة</string>
@@ -28,7 +32,7 @@
     <string name="home_intro">قارئ PDF بسيط صُمم خصوصًا للأشخاص ضعاف البصر، ويمكن للجميع استخدامه.</string>
     <string name="home_instructions">للبدء، افتح ☰ واختر فتح مستند. في العرض العادي يمكنك التمرير والتكبير والبحث وتحديد النص. صُمم Text Reflow للقراءة المتواصلة للكتب والمجلات والمقالات العلمية وصفحات الصحف.</string>
     <string name="important">مهم</string>
-    <string name="home_warning">Text Reflow ليس نسخة مطابقة للتخطيط الأصلي. قد يغيّر ترتيب القراءة ويحذف الصور والجداول والتنسيق. لا يتم عرض الجداول. لا تستخدم Text Reflow للمستندات الطبية أو المالية أو القانونية أو الضريبية أو النماذج أو غيرها من المستندات التي تكون فيها البنية أو طريقة الترتيب مهمة. استخدم عرض PDF الأصلي بدلًا من ذلك.</string>
+    <string name="home_warning">Text Reflow ليس نسخة مطابقة للتخطيط الأصلي. قد يغيّر ترتيب القراءة ويحذف الصور أو التنسيق. في هذه النسخة التجريبية الأولى قد تظل الجداول والتخطيطات المعقدة ظاهرة كنص عادي أو بترتيب غير صحيح. لا تستخدم Text Reflow للمستندات الطبية أو المالية أو القانونية أو الضريبية أو النماذج أو غيرها من المستندات التي تكون فيها البنية أو طريقة الترتيب مهمة. استخدم عرض PDF الأصلي بدلًا من ذلك.</string>
     <string name="privacy">الخصوصية</string>
     <string name="home_privacy">يفتح التطبيق المستندات التي تختارها فقط. لا يطلب وصولًا عامًا إلى ملفاتك ولا يحتاج إلى اتصال بالإنترنت.</string>
 

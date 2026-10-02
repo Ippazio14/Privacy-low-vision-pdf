@@ -19,6 +19,10 @@
     <string name="theme_high_contrast">Hoher Kontrast</string>
 
     <string name="enable_reflow">Text Reflow aktivieren</string>
+    <string name="font_size">Textgröße</string>
+    <string name="exit_reflow">Text Reflow beenden</string>
+    <string name="reflow_loading">Text Reflow wird vorbereitet…</string>
+    <string name="reflow_no_text">In diesem PDF wurde kein lesbarer Text gefunden.</string>
     <string name="close_program">Programm schließen</string>
 
     <string name="language">Sprache</string>
@@ -28,7 +32,7 @@
     <string name="home_intro">Ein einfacher PDF-Reader, besonders für Menschen mit Sehbehinderung gedacht, aber für alle nutzbar.</string>
     <string name="home_instructions">Öffnen Sie zum Start ☰ und wählen Sie Dokument öffnen. In der normalen Ansicht können Sie scrollen, zoomen, suchen und Text auswählen. Text Reflow ist für fortlaufendes Lesen von Büchern, Zeitschriften, wissenschaftlichen Artikeln und Zeitungsseiten gedacht.</string>
     <string name="important">Wichtig</string>
-    <string name="home_warning">Text Reflow ist keine originalgetreue Kopie des ursprünglichen Layouts. Die Lesereihenfolge kann sich ändern, und Bilder, Tabellen oder Formatierungen können entfallen. Tabellen werden nicht angezeigt. Verwenden Sie Text Reflow nicht für medizinische, finanzielle, rechtliche oder steuerliche Dokumente, Formulare oder andere Dokumente, bei denen Struktur oder Layout wichtig sind. Verwenden Sie stattdessen die ursprüngliche PDF-Ansicht.</string>
+    <string name="home_warning">Text Reflow ist keine originalgetreue Kopie des ursprünglichen Layouts. Die Lesereihenfolge kann sich ändern, und Bilder oder Formatierungen können entfallen. In dieser ersten experimentellen Version können Tabellen und komplexe Layouts noch als einfacher Text oder in falscher Reihenfolge erscheinen. Verwenden Sie Text Reflow nicht für medizinische, finanzielle, rechtliche oder steuerliche Dokumente, Formulare oder andere Dokumente, bei denen Struktur oder Layout wichtig sind. Verwenden Sie stattdessen die ursprüngliche PDF-Ansicht.</string>
     <string name="privacy">Datenschutz</string>
     <string name="home_privacy">Die App öffnet nur Dokumente, die Sie auswählen. Sie benötigt keinen allgemeinen Zugriff auf Ihre Dateien und keine Internetverbindung.</string>
 

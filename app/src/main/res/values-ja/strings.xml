@@ -19,6 +19,10 @@
     <string name="theme_high_contrast">ハイコントラスト</string>
 
     <string name="enable_reflow">Text Reflow を有効にする</string>
+    <string name="font_size">文字サイズ</string>
+    <string name="exit_reflow">Text Reflow を終了</string>
+    <string name="reflow_loading">Text Reflow を準備しています…</string>
+    <string name="reflow_no_text">この PDF では読み取り可能なテキストが見つかりませんでした。</string>
     <string name="close_program">プログラムを終了</string>
 
     <string name="language">言語</string>
@@ -28,7 +32,7 @@
     <string name="home_intro">特にロービジョンの方を想定したシンプルな PDF リーダーですが、どなたでも利用できます。</string>
     <string name="home_instructions">開始するには ☰ を開き、「文書を開く」を選択します。通常表示では、スクロール、ズーム、検索、テキスト選択ができます。Text Reflow は書籍、雑誌、科学論文、新聞ページなどの連続した文章を読むための機能です。</string>
     <string name="important">重要</string>
-    <string name="home_warning">Text Reflow は元のレイアウトを忠実に再現するものではありません。読む順序が変わったり、画像、表、書式が省略されたりする場合があります。表は表示されません。医療、金融、法律、税務、フォームなど、構造や配置が重要な文書には Text Reflow を使用せず、元の PDF 表示を使用してください。</string>
+    <string name="home_warning">Text Reflow は元のレイアウトを忠実に再現するものではありません。読む順序が変わったり、画像や書式が省略されたりする場合があります。この最初の実験版では、表や複雑なレイアウトが単純なテキストとして表示されたり、順序が誤ったりする場合があります。医療、金融、法律、税務、フォームなど、構造や配置が重要な文書には Text Reflow を使用せず、元の PDF 表示を使用してください。</string>
     <string name="privacy">プライバシー</string>
     <string name="home_privacy">このアプリは、ユーザーが選択した文書だけを開きます。ファイル全体へのアクセス権限は不要で、インターネット接続も必要ありません。</string>
 

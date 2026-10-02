@@ -19,6 +19,10 @@
     <string name="theme_high_contrast">高对比度</string>
 
     <string name="enable_reflow">启用 Text Reflow</string>
+    <string name="font_size">文字大小</string>
+    <string name="exit_reflow">退出 Text Reflow</string>
+    <string name="reflow_loading">正在准备 Text Reflow…</string>
+    <string name="reflow_no_text">此 PDF 中未找到可读文本。</string>
     <string name="close_program">关闭程序</string>
 
     <string name="language">语言</string>
@@ -28,7 +32,7 @@
     <string name="home_intro">一个简洁的 PDF 阅读器，尤其为低视力用户设计，但任何人都可以使用。</string>
     <string name="home_instructions">开始时，请打开 ☰ 并选择“打开文档”。在普通视图中可以滚动、缩放、搜索和选择文本。Text Reflow 适合连续阅读书籍、杂志、科学论文和报纸页面。</string>
     <string name="important">重要</string>
-    <string name="home_warning">Text Reflow 并不是原始版式的忠实副本。它可能改变阅读顺序，并省略图片、表格和格式。表格不会显示。请勿使用 Text Reflow 阅读医疗、金融、法律、税务、表单或其他依赖结构和版式的文档；这类文档请使用原始 PDF 视图。</string>
+    <string name="home_warning">Text Reflow 并不是原始版式的忠实副本。它可能改变阅读顺序，并省略图片或格式。在这一首个实验版本中，表格和复杂版式仍可能以普通文本显示，或出现顺序错误。请勿使用 Text Reflow 阅读医疗、金融、法律、税务、表单或其他依赖结构和版式的文档；这类文档请使用原始 PDF 视图。</string>
     <string name="privacy">隐私</string>
     <string name="home_privacy">本应用只打开你主动选择的文档，不需要对文件进行全面访问，也不需要互联网连接。</string>
 

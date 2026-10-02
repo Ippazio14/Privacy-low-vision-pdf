@@ -17,12 +17,19 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.pdf.PdfDocument;
 import androidx.pdf.PdfPoint;
 import androidx.pdf.content.ExternalLink;
+import androidx.pdf.content.PdfPageTextContent;
 import androidx.pdf.view.PdfView;
 import androidx.pdf.viewer.fragment.PdfViewerFragment;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import kotlin.ResultKt;
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.CoroutineContext;
+import kotlin.coroutines.EmptyCoroutineContext;
+import kotlin.coroutines.intrinsics.IntrinsicsKt;
 
 public class ReaderPdfFragment extends PdfViewerFragment {
     public static final int PDF_THEME_ORIGINAL = 0;
@@ -37,10 +44,17 @@ public class ReaderPdfFragment extends PdfViewerFragment {
         void onPdfLoadError();
     }
 
+    public interface ReflowTextCallback {
+        void onTextReady(@NonNull String text);
+        void onError(@NonNull Throwable error);
+    }
+
     private Host host;
     private PdfView pdfView;
+    private PdfDocument loadedDocument;
     private int pdfTheme = PDF_THEME_ORIGINAL;
     private String readingKey;
+    private int reflowExtractionGeneration;
 
     private final PdfView.OnViewportChangedListener viewportListener =
             (firstVisiblePage, visiblePagesCount, pageLocations, zoomLevel) -> {
@@ -81,6 +95,8 @@ public class ReaderPdfFragment extends PdfViewerFragment {
     @Override
     public void onLoadDocumentSuccess(@NonNull PdfDocument document) {
         super.onLoadDocumentSuccess(document);
+        loadedDocument = document;
+        reflowExtractionGeneration++;
         setToolboxVisible(false);
         readingKey = keyForUri(document.getUri());
 
@@ -98,6 +114,8 @@ public class ReaderPdfFragment extends PdfViewerFragment {
 
     @Override
     public void onLoadDocumentError(@NonNull Throwable error) {
+        loadedDocument = null;
+        reflowExtractionGeneration++;
         super.onLoadDocumentError(error);
         if (host != null) {
             host.onPdfLoadError();
@@ -157,6 +175,153 @@ public class ReaderPdfFragment extends PdfViewerFragment {
 
     public void zoomOut() {
         changeZoom(1f / 1.20f);
+    }
+
+    public void extractReflowText(@NonNull ReflowTextCallback callback) {
+        PdfDocument document = loadedDocument;
+        if (document == null) {
+            callback.onError(new IllegalStateException("PDF document is not ready"));
+            return;
+        }
+
+        int generation = ++reflowExtractionGeneration;
+        StringBuilder output = new StringBuilder();
+        extractReflowPage(document, 0, document.getPageCount(), output, generation, callback);
+    }
+
+    public void cancelReflowExtraction() {
+        reflowExtractionGeneration++;
+    }
+
+    private void extractReflowPage(
+            @NonNull PdfDocument document,
+            int pageNumber,
+            int pageCount,
+            @NonNull StringBuilder output,
+            int generation,
+            @NonNull ReflowTextCallback callback) {
+        if (generation != reflowExtractionGeneration || document != loadedDocument) {
+            return;
+        }
+
+        if (pageNumber >= pageCount) {
+            callback.onTextReady(output.toString().trim());
+            return;
+        }
+
+        Continuation<PdfDocument.PdfPageContent> continuation =
+                new Continuation<PdfDocument.PdfPageContent>() {
+                    @NonNull
+                    @Override
+                    public CoroutineContext getContext() {
+                        return EmptyCoroutineContext.INSTANCE;
+                    }
+
+                    @Override
+                    public void resumeWith(@NonNull Object result) {
+                        handleReflowPageResult(
+                                document,
+                                pageNumber,
+                                pageCount,
+                                output,
+                                generation,
+                                callback,
+                                result);
+                    }
+                };
+
+        try {
+            Object result = document.getPageContent(pageNumber, continuation);
+            if (result != IntrinsicsKt.getCOROUTINE_SUSPENDED()) {
+                handleReflowPageResult(
+                        document,
+                        pageNumber,
+                        pageCount,
+                        output,
+                        generation,
+                        callback,
+                        result);
+            }
+        } catch (Throwable error) {
+            if (generation == reflowExtractionGeneration) {
+                callback.onError(error);
+            }
+        }
+    }
+
+    private void handleReflowPageResult(
+            @NonNull PdfDocument document,
+            int pageNumber,
+            int pageCount,
+            @NonNull StringBuilder output,
+            int generation,
+            @NonNull ReflowTextCallback callback,
+            @NonNull Object result) {
+        if (generation != reflowExtractionGeneration || document != loadedDocument) {
+            return;
+        }
+
+        try {
+            ResultKt.throwOnFailure(result);
+            PdfDocument.PdfPageContent pageContent = (PdfDocument.PdfPageContent) result;
+            appendMinimalReflowPage(pageContent, output);
+
+            // Post the next page to avoid building a deep Java call stack if a page completes
+            // immediately. The extraction itself remains asynchronous inside AndroidX PDF.
+            if (pdfView != null) {
+                pdfView.post(() -> extractReflowPage(
+                        document,
+                        pageNumber + 1,
+                        pageCount,
+                        output,
+                        generation,
+                        callback));
+            } else {
+                extractReflowPage(
+                        document,
+                        pageNumber + 1,
+                        pageCount,
+                        output,
+                        generation,
+                        callback);
+            }
+        } catch (Throwable error) {
+            if (generation == reflowExtractionGeneration) {
+                callback.onError(error);
+            }
+        }
+    }
+
+    private void appendMinimalReflowPage(
+            @Nullable PdfDocument.PdfPageContent pageContent,
+            @NonNull StringBuilder output) {
+        if (pageContent == null) {
+            return;
+        }
+
+        for (PdfPageTextContent textContent : pageContent.getTextContents()) {
+            // Bounds are deliberately left untouched in this first version. They will feed the
+            // later post-filter for columns, repeated headers and table detection.
+            textContent.getBounds();
+
+            String text = minimalPostFilter(textContent.getText());
+            if (text.isEmpty()) {
+                continue;
+            }
+
+            if (output.length() > 0) {
+                output.append("\n\n");
+            }
+            output.append(text);
+        }
+    }
+
+    @NonNull
+    private String minimalPostFilter(@Nullable String text) {
+        if (text == null) {
+            return "";
+        }
+        return text.replace("\r\n", "\n").replace('\r', '\n').trim();
     }
 
     private void changeZoom(float factor) {
@@ -281,6 +446,7 @@ public class ReaderPdfFragment extends PdfViewerFragment {
 
     @Override
     public void onDestroyView() {
+        cancelReflowExtraction();
         if (pdfView != null) {
             pdfView.removeOnViewportChangedListener(viewportListener);
             pdfView.removeOnGestureStateChangedListener(gestureListener);

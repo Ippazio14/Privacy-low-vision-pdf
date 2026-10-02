@@ -19,6 +19,10 @@
     <string name="theme_high_contrast">Visoki kontrast</string>
 
     <string name="enable_reflow">Omogući Text Reflow</string>
+    <string name="font_size">Veličina teksta</string>
+    <string name="exit_reflow">Izađi iz Text Reflowa</string>
+    <string name="reflow_loading">Priprema Text Reflowa…</string>
+    <string name="reflow_no_text">U ovom PDF-u nije pronađen čitljiv tekst.</string>
     <string name="close_program">Zatvori program</string>
 
     <string name="language">Jezik</string>
@@ -28,7 +32,7 @@
     <string name="home_intro">Jednostavan PDF čitač namijenjen osobito slabovidnim osobama, ali prikladan za sve.</string>
     <string name="home_instructions">Za početak otvorite ☰ i odaberite Otvori dokument. U običnom prikazu možete pomicati, povećavati, pretraživati i označavati tekst. Text Reflow namijenjen je neprekinutom čitanju knjiga, časopisa, znanstvenih članaka i novinskih stranica.</string>
     <string name="important">Važno</string>
-    <string name="home_warning">Text Reflow nije vjerna kopija izvornog rasporeda. Može promijeniti redoslijed čitanja te izostaviti slike, tablice i oblikovanje. Tablice se ne prikazuju. Nemojte koristiti Text Reflow za medicinske, financijske, pravne ili porezne dokumente, obrasce ili druge dokumente u kojima su struktura ili raspored važni. Umjesto toga koristite izvorni PDF prikaz.</string>
+    <string name="home_warning">Text Reflow nije vjerna kopija izvornog rasporeda. Može promijeniti redoslijed čitanja te izostaviti slike ili oblikovanje. U ovoj prvoj eksperimentalnoj verziji tablice i složeni rasporedi još se mogu pojaviti kao običan tekst ili pogrešnim redoslijedom. Nemojte koristiti Text Reflow za medicinske, financijske, pravne ili porezne dokumente, obrasce ili druge dokumente u kojima su struktura ili raspored važni. Umjesto toga koristite izvorni PDF prikaz.</string>
     <string name="privacy">Privatnost</string>
     <string name="home_privacy">Aplikacija otvara samo dokumente koje odaberete. Ne zahtijeva opći pristup vašim datotekama niti internetsku vezu.</string>
 
