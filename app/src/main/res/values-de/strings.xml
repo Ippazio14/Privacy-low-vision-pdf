@@ -26,9 +26,9 @@
 
     <string name="home_title">Privacy Low Vision PDF</string>
     <string name="home_intro">Ein einfacher PDF-Reader, besonders für Menschen mit Sehbehinderung gedacht, aber für alle nutzbar.</string>
-    <string name="home_instructions">Öffnen Sie zum Start ☰ und wählen Sie Dokument öffnen. In der normalen Ansicht können Sie scrollen, zoomen, suchen und Text auswählen. Text Reflow passt lesbaren Text an den Bildschirm an.</string>
+    <string name="home_instructions">Öffnen Sie zum Start ☰ und wählen Sie Dokument öffnen. In der normalen Ansicht können Sie scrollen, zoomen, suchen und Text auswählen. Text Reflow ist für fortlaufendes Lesen von Büchern, Zeitschriften, wissenschaftlichen Artikeln und Zeitungsseiten gedacht.</string>
     <string name="important">Wichtig</string>
-    <string name="home_warning">Text Reflow verändert das ursprüngliche Layout und kann Bilder, Spalten, Tabellen und Formatierungen weglassen. Verwenden Sie bei rechtlichen, medizinischen, steuerlichen Formularen oder anderen Dokumenten, bei denen das Originallayout wichtig ist, die ursprüngliche PDF-Ansicht oder eine dafür besser geeignete Anwendung.</string>
+    <string name="home_warning">Text Reflow ist keine originalgetreue Kopie des ursprünglichen Layouts. Die Lesereihenfolge kann sich ändern, und Bilder, Tabellen oder Formatierungen können entfallen. Tabellen werden nicht angezeigt. Verwenden Sie Text Reflow nicht für medizinische, finanzielle, rechtliche oder steuerliche Dokumente, Formulare oder andere Dokumente, bei denen Struktur oder Layout wichtig sind. Verwenden Sie stattdessen die ursprüngliche PDF-Ansicht.</string>
     <string name="privacy">Datenschutz</string>
     <string name="home_privacy">Die App öffnet nur Dokumente, die Sie auswählen. Sie benötigt keinen allgemeinen Zugriff auf Ihre Dateien und keine Internetverbindung.</string>
 

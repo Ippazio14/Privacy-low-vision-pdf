@@ -26,9 +26,9 @@
 
     <string name="home_title">Privacy Low Vision PDF</string>
     <string name="home_intro">一个简洁的 PDF 阅读器，尤其为低视力用户设计，但任何人都可以使用。</string>
-    <string name="home_instructions">开始时，请打开 ☰ 并选择“打开文档”。在普通视图中可以滚动、缩放、搜索和选择文本。Text Reflow 会让可读取的文本适应屏幕。</string>
+    <string name="home_instructions">开始时，请打开 ☰ 并选择“打开文档”。在普通视图中可以滚动、缩放、搜索和选择文本。Text Reflow 适合连续阅读书籍、杂志、科学论文和报纸页面。</string>
     <string name="important">重要</string>
-    <string name="home_warning">Text Reflow 会改变原始版式，并可能省略图片、分栏、表格和格式。对于法律、医疗、税务、表单或其他原始版式十分重要的文档，请使用原始 PDF 视图或更适合的其他应用。</string>
+    <string name="home_warning">Text Reflow 并不是原始版式的忠实副本。它可能改变阅读顺序，并省略图片、表格和格式。表格不会显示。请勿使用 Text Reflow 阅读医疗、金融、法律、税务、表单或其他依赖结构和版式的文档；这类文档请使用原始 PDF 视图。</string>
     <string name="privacy">隐私</string>
     <string name="home_privacy">本应用只打开你主动选择的文档，不需要对文件进行全面访问，也不需要互联网连接。</string>
 

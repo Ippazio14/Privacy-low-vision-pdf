@@ -26,9 +26,9 @@
 
     <string name="home_title">Privacy Low Vision PDF</string>
     <string name="home_intro">Jednostavan PDF čitač namijenjen osobito slabovidnim osobama, ali prikladan za sve.</string>
-    <string name="home_instructions">Za početak otvorite ☰ i odaberite Otvori dokument. U običnom prikazu možete pomicati, povećavati, pretraživati i označavati tekst. Text Reflow prilagođava čitljiv tekst zaslonu.</string>
+    <string name="home_instructions">Za početak otvorite ☰ i odaberite Otvori dokument. U običnom prikazu možete pomicati, povećavati, pretraživati i označavati tekst. Text Reflow namijenjen je neprekinutom čitanju knjiga, časopisa, znanstvenih članaka i novinskih stranica.</string>
     <string name="important">Važno</string>
-    <string name="home_warning">Text Reflow mijenja izvorni raspored i može izostaviti slike, stupce, tablice i oblikovanje. Za pravne, medicinske, porezne dokumente, obrasce ili druge dokumente kod kojih je izvorni raspored važan, koristite izvorni PDF prikaz ili drugu prikladniju aplikaciju.</string>
+    <string name="home_warning">Text Reflow nije vjerna kopija izvornog rasporeda. Može promijeniti redoslijed čitanja te izostaviti slike, tablice i oblikovanje. Tablice se ne prikazuju. Nemojte koristiti Text Reflow za medicinske, financijske, pravne ili porezne dokumente, obrasce ili druge dokumente u kojima su struktura ili raspored važni. Umjesto toga koristite izvorni PDF prikaz.</string>
     <string name="privacy">Privatnost</string>
     <string name="home_privacy">Aplikacija otvara samo dokumente koje odaberete. Ne zahtijeva opći pristup vašim datotekama niti internetsku vezu.</string>
 
